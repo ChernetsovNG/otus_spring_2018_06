@@ -54,9 +54,9 @@ public class QuestionServiceImpl implements QuestionService {
             answerVariants.add(csvLine[index].trim());
         }
         String rightAnswersString = csvLine[index];
-        List<Integer> rightAnswersNumbers = Arrays.stream(
-                rightAnswersString.substring(1, rightAnswersString.length() - 1).trim()
-                        .split(","))
+        List<Integer> rightAnswersNumbers = Arrays.stream(rightAnswersString
+                .substring(1, rightAnswersString.length() - 1).trim()
+                .split(","))
                 .map(String::trim)
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
