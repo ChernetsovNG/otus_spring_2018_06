@@ -29,6 +29,8 @@ public class TestingServiceImpl implements TestingService {
     private final List<List<Integer>> rightAnswers = new ArrayList<>();
     private int rightAnswersCount = 0;
 
+    private boolean exit = false;
+
     public TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService) {
         this.studentDao = studentDao;
         this.questionService = questionService;
@@ -42,7 +44,6 @@ public class TestingServiceImpl implements TestingService {
             Student student = studentOptional.get();
             List<Question> questions = questionService.getQuestions(questionsFile);
             if (questions.size() > 0) {
-
                 questionIds.clear();
                 chooseAnswers.clear();
                 rightAnswers.clear();
@@ -50,8 +51,14 @@ public class TestingServiceImpl implements TestingService {
 
                 consoleService.writeInConsole("Начинаем тестирование! В любой момент введите exit, чтобы выйти");
                 for (Question question : questions) {
-                    testingOneQuestion(question);
+                    if (!exit) {
+                        testingOneQuestion(question);
+                    } else {
+                        consoleService.writeInConsole("Выходим из тестирования по команде exit!");
+                        return null;
+                    }
                 }
+
                 TestingResult testingResult = new TestingResult(questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
 
                 consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
@@ -79,6 +86,7 @@ public class TestingServiceImpl implements TestingService {
                 "Введите номера выбранных ответов (отсчёт от 1) в консоль через запятую");
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
+            exit = true;
             return;
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
@@ -98,7 +106,7 @@ public class TestingServiceImpl implements TestingService {
         }
     }
 
-    private <T> boolean listEquals(List<T> listA, List<T> listB) {
+    private static <T> boolean listEquals(List<T> listA, List<T> listB) {
         return listA.containsAll(listB) && listB.containsAll(listA);
     }
 }
