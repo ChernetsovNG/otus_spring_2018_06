@@ -98,7 +98,7 @@ public class TestingServiceImpl implements TestingService {
 
     private List<Question> readTestFileQuestions() {
         consoleService.writeInConsole(getMessage("select.file") + COLON);
-        List<String> testFileNamesList = getFileNamesFromResourceFolder(testFilesFolder);
+        List<String> testFileNamesList = getFileNamesFromResourceFolder(testFilesFolder + "/" + locale);
         testFileNamesList.sort(String::compareTo);
         for (int i = 0; i < testFileNamesList.size(); i++) {
             consoleService.writeInConsole((i + 1) + " : " + testFileNamesList.get(i));
@@ -183,7 +183,7 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private String getClasspathFile(String fileName) {
-        return "classpath:" + testFilesFolder + "/" + fileName;
+        return "classpath:" + testFilesFolder + "/" + locale + "/" + fileName;
     }
 
     private void clearState() {

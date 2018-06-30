@@ -17,13 +17,13 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionsTest() throws IOException {
-        List<Question> questions = questionService.getQuestions("classpath:tests/test-file.csv");
+        List<Question> questions = questionService.getQuestions("classpath:tests/ru/test-file.csv");
 
         assertEquals(3, questions.size());
 
         assertEquals("2 + 2?", questions.get(0).getText());
-        assertEquals("Факториал 3", questions.get(1).getText());
-        assertEquals("Корень из 121", questions.get(2).getText());
+        assertEquals("Факториал 3?", questions.get(1).getText());
+        assertEquals("Корень из 121?", questions.get(2).getText());
 
         assertEquals(Integer.valueOf(4), questions.get(0).getRightAnswersNumbers().get(0));
         assertEquals(Integer.valueOf(2), questions.get(1).getRightAnswersNumbers().get(0));
@@ -38,6 +38,6 @@ class QuestionServiceImplTest {
     @Test
     void fileWithNoQuestionsShouldThrowIllegalStateException() {
         assertThrows(IllegalStateException.class,
-            () -> questionService.getQuestions("classpath:tests/file-without-questions.csv"));
+            () -> questionService.getQuestions("classpath:tests/ru/file-without-questions.csv"));
     }
 }
