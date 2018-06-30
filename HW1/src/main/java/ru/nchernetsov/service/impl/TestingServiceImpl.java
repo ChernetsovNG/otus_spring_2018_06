@@ -1,6 +1,9 @@
 package ru.nchernetsov.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.domain.Question;
 import ru.nchernetsov.domain.Student;
@@ -14,7 +17,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.nchernetsov.utils.Utils.getFileNamesFromResourceFolder;
+import static ru.nchernetsov.utils.Utils.listEquals;
+
 @Slf4j
+@Service("testingService")
+@PropertySource("classpath:application.properties")
 public class TestingServiceImpl implements TestingService {
 
     private final StudentDao studentDao;
@@ -30,24 +38,53 @@ public class TestingServiceImpl implements TestingService {
 
     private boolean exit = false;
 
-    public TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService) {
+    @Value("${tests.folder}")
+    private String testFilesFolder;
+
+    TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService) {
         this.studentDao = studentDao;
         this.questionService = questionService;
         this.consoleService = consoleService;
     }
 
     @Override
-    public TestingResult performTestingProcess(String questionsFile) {
+    public TestingResult performTestingProcess() {
+        Student student = readStudentName();
+        List<Question> questions = readTestFileQuestions();
+        TestingResult testingResult = testAllQuestions(student, questions);
+
+        consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
+            "! По результатам прохождения теста вы набрали " + rightAnswersCount + " баллов из " + questionIds.size());
+        consoleService.writeInConsole("Сводка по результатам теста:  " + testingResult);
+
+        return testingResult;
+    }
+
+    private Student readStudentName() {
         consoleService.writeInConsole("Введите имя:");
         String firstName = consoleService.readFromConsole();
         consoleService.writeInConsole("Введите фамилию:");
         String lastName = consoleService.readFromConsole();
+        return studentDao.findByName(firstName, lastName);
+    }
 
+    private List<Question> readTestFileQuestions() {
+        consoleService.writeInConsole("Выберите файл для тестирования из списка. Введите номер выбранного файла:");
+        List<String> testFileNamesList = getFileNamesFromResourceFolder(testFilesFolder);
+        testFileNamesList.sort(String::compareTo);
+        for (int i = 0; i < testFileNamesList.size(); i++) {
+            consoleService.writeInConsole((i + 1) + " : " + testFileNamesList.get(i));
+        }
+        int selectedTestFileIndex = Integer.parseInt(consoleService.readFromConsole());
+        if (selectedTestFileIndex < 1 || selectedTestFileIndex > testFileNamesList.size()) {
+            throw new IndexOutOfBoundsException("Вы ввели номер несуществующего тестового файла!");
+        }
+        String questionFileName = "classpath:" + testFilesFolder + "/" + testFileNamesList.get(selectedTestFileIndex - 1);
+        return questionService.getQuestions(questionFileName);
+    }
+
+    private TestingResult testAllQuestions(Student student, List<Question> questions) {
         clearState();
-
-        Student student = studentDao.findByName(firstName, lastName);
-        List<Question> questions = questionService.getQuestions(questionsFile);
-
         consoleService.writeInConsole("Начинаем тестирование! В любой момент введите exit, чтобы выйти");
         for (Question question : questions) {
             if (!exit) {
@@ -57,14 +94,7 @@ public class TestingServiceImpl implements TestingService {
                 return null;
             }
         }
-
-        TestingResult testingResult = new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
-
-        consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
-            "! По результатам прохождения теста вы набрали " + rightAnswersCount + " баллов из " + questionIds.size());
-        consoleService.writeInConsole("Сводка по результатам теста:  " + testingResult);
-
-        return testingResult;
+        return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
     }
 
     private void testingOneQuestion(Question question) {
@@ -103,9 +133,5 @@ public class TestingServiceImpl implements TestingService {
         chooseAnswers.clear();
         rightAnswers.clear();
         rightAnswersCount = 0;
-    }
-
-    private static <T> boolean listEquals(List<T> listA, List<T> listB) {
-        return listA.containsAll(listB) && listB.containsAll(listA);
     }
 }

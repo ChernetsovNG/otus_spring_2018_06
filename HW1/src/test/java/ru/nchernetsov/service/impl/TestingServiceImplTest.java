@@ -1,6 +1,7 @@
 package ru.nchernetsov.service.impl;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.dao.StudentDaoMock;
 import ru.nchernetsov.domain.TestingResult;
@@ -19,7 +20,8 @@ class TestingServiceImplTest {
     @Test
     void performTestingProcessTest() {
         // Имитируем последовательный ввод пользователя в консоль
-        ByteArrayInputStream in = new ByteArrayInputStream("Nikita\nChernetsov\n3\n4\n1,2\n2\n3".getBytes());
+        // имя, фамилия, номер файла, 5 ответов
+        ByteArrayInputStream in = new ByteArrayInputStream("Nikita\nChernetsov\n1\n3\n4\n1,2\n2\n3".getBytes());
         System.setIn(in);
 
         StudentDao studentDao = new StudentDaoMock();
@@ -27,7 +29,11 @@ class TestingServiceImplTest {
         ConsoleService consoleService = new ConsoleServiceImpl();
 
         TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService);
-        TestingResult testingResult = testingService.performTestingProcess("classpath:tests/math-test.csv");
+
+        // устанавливаем значение property для теста
+        ReflectionTestUtils.setField(testingService, "testFilesFolder", "tests");
+
+        TestingResult testingResult = testingService.performTestingProcess();
 
         System.setIn(System.in);
 

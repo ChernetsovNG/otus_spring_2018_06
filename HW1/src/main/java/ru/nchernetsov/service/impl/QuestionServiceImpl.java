@@ -4,6 +4,7 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import ru.nchernetsov.domain.Question;
 import ru.nchernetsov.service.QuestionService;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Service("questionService")
 public class QuestionServiceImpl implements QuestionService {
     private static final Character CSV_FILE_DELIMITER = ';';
 

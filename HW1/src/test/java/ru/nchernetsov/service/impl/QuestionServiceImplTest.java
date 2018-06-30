@@ -14,7 +14,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionsTest() {
-        List<Question> questions = questionService.getQuestions("classpath:test-file.csv");
+        List<Question> questions = questionService.getQuestions("classpath:tests/test-file.csv");
 
         assertEquals(3, questions.size());
 

@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     compile group: 'org.springframework', name: 'spring-context', version: springVersion
+    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
 
     // работа с CSV-файлами
     compile group: 'com.opencsv', name: 'opencsv', version: '4.2'
