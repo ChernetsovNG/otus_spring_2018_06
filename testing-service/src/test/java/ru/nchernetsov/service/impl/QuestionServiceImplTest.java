@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionServiceImplTest {
 
-    private QuestionService questionService = new QuestionServiceImpl();
+    private final QuestionService questionService = new QuestionServiceImpl();
 
     @Test
     void getQuestionsTest() throws IOException {

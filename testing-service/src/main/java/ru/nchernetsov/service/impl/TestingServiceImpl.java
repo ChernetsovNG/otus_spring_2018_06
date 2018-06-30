@@ -51,8 +51,6 @@ public class TestingServiceImpl implements TestingService {
     private final List<List<Integer>> rightAnswers = new ArrayList<>();
     private int rightAnswersCount = 0;
 
-    private boolean exit = false;
-
     @Autowired
     TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService, MessageSource messageSource) {
         this.studentDao = studentDao;
@@ -84,15 +82,17 @@ public class TestingServiceImpl implements TestingService {
         return testingResult;
     }
 
-    private String getMessage(String code) {
-        return messageSource.getMessage(code, new String[]{}, locale);
-    }
-
     private Student getStudentByName() {
         consoleService.writeInConsole(getMessage("enter.first.name") + COLON);
         String firstName = consoleService.readFromConsole();
+        if (firstName.equalsIgnoreCase("exit")) {
+            exit();
+        }
         consoleService.writeInConsole(getMessage("enter.last.name") + COLON);
         String lastName = consoleService.readFromConsole();
+        if (lastName.equalsIgnoreCase("exit")) {
+            exit();
+        }
         return studentDao.findByName(firstName, lastName);
     }
 
@@ -103,7 +103,11 @@ public class TestingServiceImpl implements TestingService {
         for (int i = 0; i < testFileNamesList.size(); i++) {
             consoleService.writeInConsole((i + 1) + " : " + testFileNamesList.get(i));
         }
-        int selectedTestFileIndex = Integer.parseInt(consoleService.readFromConsole());
+        String userInput = consoleService.readFromConsole();
+        if (userInput.equalsIgnoreCase("exit")) {
+            exit();
+        }
+        int selectedTestFileIndex = Integer.parseInt(userInput);
         if (selectedTestFileIndex < 1 || selectedTestFileIndex > testFileNamesList.size()) {
             throw new IndexOutOfBoundsException(getMessage("incorrect.file.number") + EXCLAMATION_POINT);
         }
@@ -119,14 +123,9 @@ public class TestingServiceImpl implements TestingService {
     private TestingResult testAllQuestions(Student student, List<Question> questions) {
         clearState();
         consoleService.writeInConsole(getMessage("start.testing"));
-        for (Question question : questions) {
-            if (!exit) {
-                testingOneQuestion(question);
-            } else {
-                consoleService.writeInConsole(getMessage("exit.test.by.user") + EXCLAMATION_POINT);
-                return null;
-            }
-        }
+
+        questions.forEach(this::testingOneQuestion);
+
         int rightAnswersPercent = rightAnswersCount * 100 / questionIds.size();
         return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount, rightAnswersPercent);
     }
@@ -142,8 +141,7 @@ public class TestingServiceImpl implements TestingService {
             getMessage("enter.selected.answers"));
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
-            exit = true;
-            return;
+            exit();
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
             .map(String::trim)
@@ -162,6 +160,10 @@ public class TestingServiceImpl implements TestingService {
         }
     }
 
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, new String[]{}, locale);
+    }
+
     private void setLocale() {
         switch (chosenLocale) {
             case "en":
@@ -173,6 +175,11 @@ public class TestingServiceImpl implements TestingService {
             default:
                 throw new UnsupportedOperationException("Locale " + chosenLocale + " is not supported");
         }
+    }
+
+    private void exit() {
+        consoleService.writeInConsole(getMessage("exit.test.by.user") + EXCLAMATION_POINT);
+        System.exit(0);
     }
 
     private String getClasspathFile(String fileName) {

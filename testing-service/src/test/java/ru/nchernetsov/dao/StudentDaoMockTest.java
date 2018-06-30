@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StudentDaoMockTest {
 
-    private StudentDao studentDao = new StudentDaoMock();
+    private final StudentDao studentDao = new StudentDaoMock();
 
     @Test
     void findByNameTest() {
