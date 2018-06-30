@@ -12,7 +12,6 @@ import ru.nchernetsov.service.TestingService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,41 +37,34 @@ public class TestingServiceImpl implements TestingService {
     }
 
     @Override
-    public TestingResult performTestingProcess(String studentFirstName, String studentLastName, String questionsFile) {
-        Optional<Student> studentOptional = studentDao.findByName(studentFirstName, studentLastName);
-        if (studentOptional.isPresent()) {
-            Student student = studentOptional.get();
-            List<Question> questions = questionService.getQuestions(questionsFile);
-            if (questions.size() > 0) {
-                questionIds.clear();
-                chooseAnswers.clear();
-                rightAnswers.clear();
-                rightAnswersCount = 0;
+    public TestingResult performTestingProcess(String questionsFile) {
+        consoleService.writeInConsole("Введите имя:");
+        String firstName = consoleService.readFromConsole();
+        consoleService.writeInConsole("Введите фамилию:");
+        String lastName = consoleService.readFromConsole();
 
-                consoleService.writeInConsole("Начинаем тестирование! В любой момент введите exit, чтобы выйти");
-                for (Question question : questions) {
-                    if (!exit) {
-                        testingOneQuestion(question);
-                    } else {
-                        consoleService.writeInConsole("Выходим из тестирования по команде exit!");
-                        return null;
-                    }
-                }
+        clearState();
 
-                TestingResult testingResult = new TestingResult(questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
+        Student student = studentDao.findByName(firstName, lastName);
+        List<Question> questions = questionService.getQuestions(questionsFile);
 
-                consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
-                        "! По результатам прохождения теста вы набрали " + rightAnswersCount + " баллов из " + questionIds.size());
-                consoleService.writeInConsole("Сводка по результатам теста:  " + testingResult);
-
-                return testingResult;
+        consoleService.writeInConsole("Начинаем тестирование! В любой момент введите exit, чтобы выйти");
+        for (Question question : questions) {
+            if (!exit) {
+                testingOneQuestion(question);
             } else {
-                log.warn("File {} doesn't contains questions! Return null testing results");
+                consoleService.writeInConsole("Выходим из тестирования по команде exit!");
+                return null;
             }
-        } else {
-            log.warn("Student: {}, {} not found. Return null testing result", studentFirstName, studentLastName);
         }
-        return null;
+
+        TestingResult testingResult = new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
+
+        consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
+            "! По результатам прохождения теста вы набрали " + rightAnswersCount + " баллов из " + questionIds.size());
+        consoleService.writeInConsole("Сводка по результатам теста:  " + testingResult);
+
+        return testingResult;
     }
 
     private void testingOneQuestion(Question question) {
@@ -83,16 +75,16 @@ public class TestingServiceImpl implements TestingService {
             consoleService.writeInConsole(question.getAnswersVariants().get(i));
         }
         consoleService.writeInConsole("Выберите один или несколько правильных ответов. " +
-                "Введите номера выбранных ответов (отсчёт от 1) в консоль через запятую");
+            "Введите номера выбранных ответов (отсчёт от 1) в консоль через запятую");
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
             exit = true;
             return;
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
-                .map(String::trim)
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+            .map(String::trim)
+            .map(Integer::parseInt)
+            .collect(Collectors.toList());
         consoleService.writeInConsole("Вы выбрали варианты ответов: " + studentAnswers);
         consoleService.writeInConsole("Правильные ответы: " + question.getRightAnswersNumbers());
         questionIds.add(question.getId());
@@ -104,6 +96,13 @@ public class TestingServiceImpl implements TestingService {
         } else {
             consoleService.writeInConsole("Вы ответили неправильно на этот вопрос");
         }
+    }
+
+    private void clearState() {
+        questionIds.clear();
+        chooseAnswers.clear();
+        rightAnswers.clear();
+        rightAnswersCount = 0;
     }
 
     private static <T> boolean listEquals(List<T> listA, List<T> listB) {

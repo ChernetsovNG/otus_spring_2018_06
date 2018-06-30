@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface StudentDao {
 
-    Optional<Student> findByName(String firstName, String lastName);
+    Student findByName(String firstName, String lastName);
 }

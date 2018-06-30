@@ -23,19 +23,25 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getQuestions(String pathToCSVFile) {
         // обходим строки в CSV-файле
-        return readAllLinesFromCSVFile(pathToCSVFile).stream()
-                .map(this::getQuestionFromCSVLine)
-                .collect(Collectors.toList());
+        List<Question> questions = readAllLinesFromCSVFile(pathToCSVFile).stream()
+            .map(this::getQuestionFromCSVLine)
+            .collect(Collectors.toList());
+
+        if (questions.size() > 0) {
+            return questions;
+        } else {
+            throw new IllegalStateException("File " + pathToCSVFile + " doesn't contains any test questions");
+        }
     }
 
     // читаем и разбираем CSV-файл
     private List<String[]> readAllLinesFromCSVFile(String pathToCSVFile) {
         try {
             CSVReader csvReader = new CSVReaderBuilder(new FileReader(ResourceUtils.getFile(pathToCSVFile)))
-                    .withCSVParser(new CSVParserBuilder()
-                            .withSeparator(CSV_FILE_DELIMITER)
-                            .build())
-                    .build();
+                .withCSVParser(new CSVParserBuilder()
+                    .withSeparator(CSV_FILE_DELIMITER)
+                    .build())
+                .build();
             return csvReader.readAll();
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -55,11 +61,11 @@ public class QuestionServiceImpl implements QuestionService {
         }
         String rightAnswersString = csvLine[index];
         List<Integer> rightAnswersNumbers = Arrays.stream(rightAnswersString
-                .substring(1, rightAnswersString.length() - 1).trim()
-                .split(","))
-                .map(String::trim)
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+            .substring(1, rightAnswersString.length() - 1).trim()
+            .split(","))
+            .map(String::trim)
+            .map(Integer::parseInt)
+            .collect(Collectors.toList());
         return new Question(id, text, answersCount, answerVariants, rightAnswersNumbers);
     }
 }

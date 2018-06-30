@@ -10,6 +10,10 @@ import java.util.List;
 @Data
 public class TestingResult {
     /**
+     * Тестируемый студент
+     */
+    private final Student student;
+    /**
      * Идентификаторы вопросов
      */
     private final List<Integer> questionIds;

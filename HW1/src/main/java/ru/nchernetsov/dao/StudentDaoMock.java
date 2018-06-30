@@ -2,8 +2,6 @@ package ru.nchernetsov.dao;
 
 import ru.nchernetsov.domain.Student;
 
-import java.util.Optional;
-
 public class StudentDaoMock implements StudentDao {
     /**
      * Имитируем получение студента из базы данных
@@ -13,7 +11,12 @@ public class StudentDaoMock implements StudentDao {
      * @return - студент, полученный из базы по имени и фамилии
      */
     @Override
-    public Optional<Student> findByName(String firstName, String lastName) {
-        return Optional.of(new Student(firstName, lastName));
+    public Student findByName(String firstName, String lastName) {
+        Student student = new Student(firstName, lastName);
+        if (student != null) {
+            return student;
+        } else {
+            throw new IllegalStateException("Student " + firstName + " " + lastName + " not found");
+        }
     }
 }

@@ -19,7 +19,7 @@ class TestingServiceImplTest {
     @Test
     void performTestingProcessTest() {
         // Имитируем последовательный ввод пользователя в консоль
-        ByteArrayInputStream in = new ByteArrayInputStream("3\n4\n1,2\n2\n3".getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream("Nikita\nChernetsov\n3\n4\n1,2\n2\n3".getBytes());
         System.setIn(in);
 
         StudentDao studentDao = new StudentDaoMock();
@@ -27,18 +27,21 @@ class TestingServiceImplTest {
         ConsoleService consoleService = new ConsoleServiceImpl();
 
         TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService);
-        TestingResult testingResult = testingService.performTestingProcess(
-                "Nikita", "Chernetsov", "classpath:tests/math-test.csv");
+        TestingResult testingResult = testingService.performTestingProcess("classpath:tests/math-test.csv");
 
         System.setIn(System.in);
 
+        assertEquals("Nikita", testingResult.getStudent().getFirstName());
+        assertEquals("Chernetsov", testingResult.getStudent().getLastName());
+
         assertEquals(4, testingResult.getRightAnswersCount());
+
         assertEquals(Arrays.asList(
-                Collections.singletonList(3),
-                Collections.singletonList(4),
-                Arrays.asList(1, 2),
-                Collections.singletonList(2),
-                Collections.singletonList(3)),
-                testingResult.getChooseAnswers());
+            Collections.singletonList(3),
+            Collections.singletonList(4),
+            Arrays.asList(1, 2),
+            Collections.singletonList(2),
+            Collections.singletonList(3)),
+            testingResult.getChooseAnswers());
     }
 }

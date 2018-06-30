@@ -6,10 +6,8 @@ public interface TestingService {
     /**
      * Провести процесс тестирования
      *
-     * @param studentFirstName - имя студента
-     * @param studentLastName  - фамилия студента
-     * @param questionsFile    - файл с вопросами теста
+     * @param questionsFile - файл с вопросами теста
      * @return - результаты прохождения теста
      */
-    TestingResult performTestingProcess(String studentFirstName, String studentLastName, String questionsFile);
+    TestingResult performTestingProcess(String questionsFile);
 }
