@@ -41,6 +41,9 @@ public class TestingServiceImpl implements TestingService {
     @Value("${tests.folder}")
     private String testFilesFolder;
 
+    @Value("${test.threshold}")
+    private int testThreshold;
+
     TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService) {
         this.studentDao = studentDao;
         this.questionService = questionService;
@@ -49,18 +52,23 @@ public class TestingServiceImpl implements TestingService {
 
     @Override
     public TestingResult performTestingProcess() {
-        Student student = readStudentName();
+        Student student = getStudentByName();
         List<Question> questions = readTestFileQuestions();
         TestingResult testingResult = testAllQuestions(student, questions);
 
         consoleService.writeInConsole("Уважаемый " + student.getFirstName() + " " + student.getLastName() +
             "! По результатам прохождения теста вы набрали " + rightAnswersCount + " баллов из " + questionIds.size());
+        if (testingResult.getRightAnswersPercent() >= testThreshold) {
+            consoleService.writeInConsole("Процент верных ответов: " + testingResult.getRightAnswersPercent() + " >= " + testThreshold + ". Тест пройден!");
+        } else {
+            consoleService.writeInConsole("Процент верных ответов: " + testingResult.getRightAnswersPercent() + " < " + testThreshold + ". Тест не пройден!");
+        }
         consoleService.writeInConsole("Сводка по результатам теста:  " + testingResult);
 
         return testingResult;
     }
 
-    private Student readStudentName() {
+    private Student getStudentByName() {
         consoleService.writeInConsole("Введите имя:");
         String firstName = consoleService.readFromConsole();
         consoleService.writeInConsole("Введите фамилию:");
@@ -94,7 +102,8 @@ public class TestingServiceImpl implements TestingService {
                 return null;
             }
         }
-        return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
+        int rightAnswersPercent = rightAnswersCount * 100 / questionIds.size();
+        return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount, rightAnswersPercent);
     }
 
     private void testingOneQuestion(Question question) {

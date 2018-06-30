@@ -29,4 +29,8 @@ public class TestingResult {
      * Количество правильных ответов
      */
     private final int rightAnswersCount;
+    /**
+     * Процент верных ответов
+     */
+    private final int rightAnswersPercent;
 }

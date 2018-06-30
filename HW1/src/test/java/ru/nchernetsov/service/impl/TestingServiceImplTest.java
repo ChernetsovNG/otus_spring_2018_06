@@ -32,6 +32,7 @@ class TestingServiceImplTest {
 
         // устанавливаем значение property для теста
         ReflectionTestUtils.setField(testingService, "testFilesFolder", "tests");
+        ReflectionTestUtils.setField(testingService, "testThreshold", 75);
 
         TestingResult testingResult = testingService.performTestingProcess();
 
@@ -49,5 +50,7 @@ class TestingServiceImplTest {
             Collections.singletonList(2),
             Collections.singletonList(3)),
             testingResult.getChooseAnswers());
+
+        assertEquals(80, testingResult.getRightAnswersPercent());
     }
 }
