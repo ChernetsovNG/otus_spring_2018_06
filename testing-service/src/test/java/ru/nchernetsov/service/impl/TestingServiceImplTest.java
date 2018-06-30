@@ -1,6 +1,8 @@
 package ru.nchernetsov.service.impl;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.dao.StudentDaoMock;
@@ -28,11 +30,12 @@ class TestingServiceImplTest {
         QuestionService questionService = new QuestionServiceImpl();
         ConsoleService consoleService = new ConsoleServiceImpl();
 
-        TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService);
+        TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService, messageSource());
 
         // устанавливаем значение property для теста
         ReflectionTestUtils.setField(testingService, "testFilesFolder", "tests");
         ReflectionTestUtils.setField(testingService, "testThreshold", 75);
+        ReflectionTestUtils.setField(testingService, "chosenLocale", "ru");
 
         TestingResult testingResult = testingService.performTestingProcess();
 
@@ -52,5 +55,12 @@ class TestingServiceImplTest {
             testingResult.getChooseAnswers());
 
         assertEquals(80, testingResult.getRightAnswersPercent());
+    }
+
+    private MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("i18n/bundle");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
     }
 }
