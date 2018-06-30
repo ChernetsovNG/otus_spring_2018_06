@@ -13,7 +13,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +22,11 @@ public class QuestionServiceImpl implements QuestionService {
     private static final Character CSV_FILE_DELIMITER = ';';
 
     @Override
-    public List<Question> getQuestions(String pathToCSVFile) {
+    public List<Question> getQuestions(String pathToCSVFile) throws IOException {
         // обходим строки в CSV-файле
         List<Question> questions = readAllLinesFromCSVFile(pathToCSVFile).stream()
             .map(this::getQuestionFromCSVLine)
             .collect(Collectors.toList());
-
         if (questions.size() > 0) {
             return questions;
         } else {
@@ -37,18 +35,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     // читаем и разбираем CSV-файл
-    private List<String[]> readAllLinesFromCSVFile(String pathToCSVFile) {
-        try {
-            CSVReader csvReader = new CSVReaderBuilder(new FileReader(ResourceUtils.getFile(pathToCSVFile)))
-                .withCSVParser(new CSVParserBuilder()
-                    .withSeparator(CSV_FILE_DELIMITER)
-                    .build())
-                .build();
-            return csvReader.readAll();
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return Collections.emptyList();
+    private List<String[]> readAllLinesFromCSVFile(String pathToCSVFile) throws IOException {
+        CSVReader csvReader = new CSVReaderBuilder(new FileReader(ResourceUtils.getFile(pathToCSVFile)))
+            .withCSVParser(new CSVParserBuilder()
+                .withSeparator(CSV_FILE_DELIMITER)
+                .build())
+            .build();
+        return csvReader.readAll();
     }
 
     // преобразуем строку в CSV-файле в вопрос для теста

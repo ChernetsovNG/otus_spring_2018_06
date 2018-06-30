@@ -21,7 +21,7 @@ class TestingServiceImplTest {
     void performTestingProcessTest() {
         // Имитируем последовательный ввод пользователя в консоль
         // имя, фамилия, номер файла, 5 ответов
-        ByteArrayInputStream in = new ByteArrayInputStream("Nikita\nChernetsov\n1\n3\n4\n1,2\n2\n3".getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream("Nikita\nChernetsov\n2\n3\n4\n1,2\n2\n3".getBytes());
         System.setIn(in);
 
         StudentDao studentDao = new StudentDaoMock();

@@ -2,6 +2,7 @@ package ru.nchernetsov.service;
 
 import ru.nchernetsov.domain.Question;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface QuestionService {
@@ -10,5 +11,5 @@ public interface QuestionService {
      * @param pathToCSVFile - путь к CSV-файлу в папке ресурсов
      * @return - список вопросов
      */
-    List<Question> getQuestions(String pathToCSVFile);
+    List<Question> getQuestions(String pathToCSVFile) throws IOException;
 }

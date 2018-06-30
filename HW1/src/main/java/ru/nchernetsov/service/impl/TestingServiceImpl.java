@@ -12,8 +12,10 @@ import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,7 +90,12 @@ public class TestingServiceImpl implements TestingService {
             throw new IndexOutOfBoundsException("Вы ввели номер несуществующего тестового файла!");
         }
         String questionFileName = "classpath:" + testFilesFolder + "/" + testFileNamesList.get(selectedTestFileIndex - 1);
-        return questionService.getQuestions(questionFileName);
+        try {
+            return questionService.getQuestions(questionFileName);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     private TestingResult testAllQuestions(Student student, List<Question> questions) {
