@@ -23,7 +23,7 @@ import static ru.nchernetsov.utils.Utils.getFileNamesFromResourceFolder;
 import static ru.nchernetsov.utils.Utils.listEquals;
 
 @Slf4j
-@Service("testingService")
+@Service
 @PropertySource("classpath:application.properties")
 public class TestingServiceImpl implements TestingService {
 
@@ -49,7 +49,6 @@ public class TestingServiceImpl implements TestingService {
     private final List<Integer> questionIds = new ArrayList<>();
     private final List<List<Integer>> chooseAnswers = new ArrayList<>();
     private final List<List<Integer>> rightAnswers = new ArrayList<>();
-    private int rightAnswersCount = 0;
 
     @Autowired
     TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService, MessageSource messageSource) {
@@ -68,14 +67,14 @@ public class TestingServiceImpl implements TestingService {
         TestingResult testingResult = testAllQuestions(student, questions);
 
         consoleService.writeInConsole(getMessage("respected") + SPACE + student.getFirstName() + SPACE + student.getLastName() + EXCLAMATION_POINT + SPACE +
-            getMessage("tests.results") + SPACE + rightAnswersCount + SPACE + getMessage("points") + SPACE + getMessage("from") + SPACE + questionIds.size());
+                getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE + getMessage("points") + SPACE + getMessage("from") + SPACE + questionIds.size());
 
-        if (testingResult.getRightAnswersPercent() >= testThreshold) {
+        if (testingResult.rightAnswersPercent() >= testThreshold) {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                testingResult.getRightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
+                    testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
         } else {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                testingResult.getRightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
+                    testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
         }
         consoleService.writeInConsole(getMessage("test.summary") + COLON + SPACE + testingResult);
 
@@ -124,13 +123,21 @@ public class TestingServiceImpl implements TestingService {
         clearState();
         consoleService.writeInConsole(getMessage("start.testing"));
 
+        int rightAnswersCount = 0;
+
+        for (Question question : questions) {
+            boolean isItRight = testingOneQuestion(question);
+            if (isItRight) {
+                rightAnswersCount++;
+            }
+        }
+
         questions.forEach(this::testingOneQuestion);
 
-        int rightAnswersPercent = rightAnswersCount * 100 / questionIds.size();
-        return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount, rightAnswersPercent);
+        return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
     }
 
-    private void testingOneQuestion(Question question) {
+    private boolean testingOneQuestion(Question question) {
         consoleService.writeInConsole(getMessage("question.number") + SPACE + question.getId());
         consoleService.writeInConsole(question.getText());
         for (int i = 0; i < question.getAnswersCount(); i++) {
@@ -138,25 +145,26 @@ public class TestingServiceImpl implements TestingService {
             consoleService.writeInConsole(question.getAnswersVariants().get(i));
         }
         consoleService.writeInConsole(getMessage("select.correct.answers") + DOT + SPACE +
-            getMessage("enter.selected.answers"));
+                getMessage("enter.selected.answers"));
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
             exit();
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
-            .map(String::trim)
-            .map(Integer::parseInt)
-            .collect(Collectors.toList());
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
         consoleService.writeInConsole(getMessage("you.choose") + COLON + SPACE + studentAnswers);
         consoleService.writeInConsole(getMessage("right.answers") + COLON + SPACE + question.getRightAnswersNumbers());
         questionIds.add(question.getId());
         chooseAnswers.add(studentAnswers);
         rightAnswers.add(question.getRightAnswersNumbers());
         if (listEquals(studentAnswers, question.getRightAnswersNumbers())) {
-            rightAnswersCount++;
             consoleService.writeInConsole(getMessage("correct.answer"));
+            return true;
         } else {
             consoleService.writeInConsole(getMessage("incorrect.answer"));
+            return false;
         }
     }
 
@@ -183,13 +191,12 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private String getClasspathFile(String fileName) {
-        return "classpath:" + testFilesFolder + "/" + locale + "/" + fileName;
+        return "classpath:" + testFilesFolder + FILE_SEPARATOR + locale + FILE_SEPARATOR + fileName;
     }
 
     private void clearState() {
         questionIds.clear();
         chooseAnswers.clear();
         rightAnswers.clear();
-        rightAnswersCount = 0;
     }
 }

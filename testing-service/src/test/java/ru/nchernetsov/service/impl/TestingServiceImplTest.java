@@ -54,7 +54,7 @@ class TestingServiceImplTest {
             Collections.singletonList(3)),
             testingResult.getChooseAnswers());
 
-        assertEquals(80, testingResult.getRightAnswersPercent());
+        assertEquals(80, testingResult.rightAnswersPercent());
     }
 
     private MessageSource messageSource() {

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service("questionService")
+@Service
 public class QuestionServiceImpl implements QuestionService {
     private static final Character CSV_FILE_DELIMITER = ';';
 

@@ -17,7 +17,11 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionsTest() throws IOException {
-        List<Question> questions = questionService.getQuestions("classpath:tests/ru/test-file.csv");
+        //String pathToCSVFile = "classpath:tests" + FILE_SEPARATOR + "ru" + FILE_SEPARATOR + "test-file.csv";
+
+        String pathToCSVFile = "classpath:tests\\ru\\test-file.csv";
+
+        List<Question> questions = questionService.getQuestions(pathToCSVFile);
 
         assertEquals(3, questions.size());
 

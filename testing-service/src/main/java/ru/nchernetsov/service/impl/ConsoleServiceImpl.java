@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Slf4j
-@Service("consoleService")
+@Service
 public class ConsoleServiceImpl implements ConsoleService {
     private final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 

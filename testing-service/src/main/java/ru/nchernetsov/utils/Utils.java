@@ -7,13 +7,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Utils {
+public final class Utils {
+
+    private Utils() {
+    }
 
     /**
      * Сравнить содержимое двух списков
+     *
      * @param listA - первый список
      * @param listB - второй список
-     * @param <T> - тип элементов
+     * @param <T>   - тип элементов
      * @return - равны ли списки
      */
     public static <T> boolean listEquals(List<T> listA, List<T> listB) {
@@ -22,6 +26,7 @@ public class Utils {
 
     /**
      * Получить список файлов в папке внутри папки resources
+     *
      * @param folder - папка внутри папки resources
      * @return - список файлов
      */
@@ -31,7 +36,7 @@ public class Utils {
         assert url != null;
         String path = url.getPath();
         return Arrays.stream(Objects.requireNonNull(new File(path).listFiles()))
-            .map(File::getName)
-            .collect(Collectors.toList());
+                .map(File::getName)
+                .collect(Collectors.toList());
     }
 }

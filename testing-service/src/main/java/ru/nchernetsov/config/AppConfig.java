@@ -8,6 +8,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.dao.StudentDaoMock;
 
+import static ru.nchernetsov.utils.Constants.FILE_SEPARATOR;
+
 @Configuration
 public class AppConfig {
 
@@ -18,14 +20,14 @@ public class AppConfig {
 
     // для доступа к property-файлам
     @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+    public PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("i18n/bundle");
+        messageSource.setBasename("i18n" + FILE_SEPARATOR + "bundle");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
