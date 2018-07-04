@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.nchernetsov.utils.Constants.FILE_SEPARATOR;
 
 class QuestionServiceImplTest {
 
@@ -17,9 +18,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionsTest() throws IOException {
-        //String pathToCSVFile = "classpath:tests" + FILE_SEPARATOR + "ru" + FILE_SEPARATOR + "test-file.csv";
-
-        String pathToCSVFile = "classpath:tests\\ru\\test-file.csv";
+        String pathToCSVFile = "classpath:tests" + FILE_SEPARATOR + "ru" + FILE_SEPARATOR + "test-file.csv";
 
         List<Question> questions = questionService.getQuestions(pathToCSVFile);
 
@@ -42,6 +41,6 @@ class QuestionServiceImplTest {
     @Test
     void fileWithNoQuestionsShouldThrowIllegalStateException() {
         assertThrows(IllegalStateException.class,
-            () -> questionService.getQuestions("classpath:tests/ru/file-without-questions.csv"));
+                () -> questionService.getQuestions("classpath:tests/ru/file-without-questions.csv"));
     }
 }

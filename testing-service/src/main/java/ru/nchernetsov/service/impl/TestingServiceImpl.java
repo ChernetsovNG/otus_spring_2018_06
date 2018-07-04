@@ -46,10 +46,6 @@ public class TestingServiceImpl implements TestingService {
 
     private Locale locale;
 
-    private final List<Integer> questionIds = new ArrayList<>();
-    private final List<List<Integer>> chooseAnswers = new ArrayList<>();
-    private final List<List<Integer>> rightAnswers = new ArrayList<>();
-
     @Autowired
     TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService, MessageSource messageSource) {
         this.studentDao = studentDao;
@@ -67,7 +63,8 @@ public class TestingServiceImpl implements TestingService {
         TestingResult testingResult = testAllQuestions(student, questions);
 
         consoleService.writeInConsole(getMessage("respected") + SPACE + student.getFirstName() + SPACE + student.getLastName() + EXCLAMATION_POINT + SPACE +
-                getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE + getMessage("points") + SPACE + getMessage("from") + SPACE + questionIds.size());
+                getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE +
+                getMessage("points") + SPACE + getMessage("from") + SPACE + testingResult.getQuestionIds().size());
 
         if (testingResult.rightAnswersPercent() >= testThreshold) {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
@@ -120,24 +117,25 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private TestingResult testAllQuestions(Student student, List<Question> questions) {
-        clearState();
         consoleService.writeInConsole(getMessage("start.testing"));
 
+        final List<Integer> questionIds = new ArrayList<>();
+        final List<List<Integer>> chooseAnswers = new ArrayList<>();
+        final List<List<Integer>> rightAnswers = new ArrayList<>();
         int rightAnswersCount = 0;
 
         for (Question question : questions) {
-            boolean isItRight = testingOneQuestion(question);
+            boolean isItRight = testingOneQuestion(question, questionIds, chooseAnswers, rightAnswers);
             if (isItRight) {
                 rightAnswersCount++;
             }
         }
 
-        questions.forEach(this::testingOneQuestion);
-
         return new TestingResult(student, questionIds, chooseAnswers, rightAnswers, rightAnswersCount);
     }
 
-    private boolean testingOneQuestion(Question question) {
+    private boolean testingOneQuestion(Question question, List<Integer> questionIds, List<List<Integer>> chooseAnswers,
+                                       List<List<Integer>> rightAnswers) {
         consoleService.writeInConsole(getMessage("question.number") + SPACE + question.getId());
         consoleService.writeInConsole(question.getText());
         for (int i = 0; i < question.getAnswersCount(); i++) {
@@ -194,9 +192,4 @@ public class TestingServiceImpl implements TestingService {
         return "classpath:" + testFilesFolder + FILE_SEPARATOR + locale + FILE_SEPARATOR + fileName;
     }
 
-    private void clearState() {
-        questionIds.clear();
-        chooseAnswers.clear();
-        rightAnswers.clear();
-    }
 }

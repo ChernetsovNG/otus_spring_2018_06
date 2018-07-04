@@ -34,6 +34,6 @@ public class TestingResult {
      * Процент верных ответов
      */
     public int rightAnswersPercent() {
-        return rightAnswersCount / questionIds.size();
+        return rightAnswersCount * 100 / questionIds.size();
     }
 }
