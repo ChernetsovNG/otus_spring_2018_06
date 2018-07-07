@@ -9,4 +9,6 @@ dependencies {
 
     // работа с CSV-файлами
     compile("com.opencsv:opencsv:4.2")
+
+    provided('org.projectlombok:lombok:1.18.0')
 }
