@@ -1,0 +1,7 @@
+tests:
+  folder: "tests"
+
+test:
+  threshold: 75
+
+locale: en
