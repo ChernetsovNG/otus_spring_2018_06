@@ -1,9 +1,10 @@
 package ru.nchernetsov.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import static ru.nchernetsov.utils.Utils.listEquals;
 @Slf4j
 @Service
 @PropertySource("classpath:application.yml")
-public class TestingServiceImpl implements TestingService, InitializingBean {
+public class TestingServiceImpl implements TestingService, ApplicationRunner {
 
     private final StudentDao studentDao;
 
@@ -195,7 +196,7 @@ public class TestingServiceImpl implements TestingService, InitializingBean {
 
     // Запускаем процесс тестирования после старта приложения
     @Override
-    public void afterPropertiesSet() {
+    public void run(ApplicationArguments args) {
         TestingResult testingResult = performTestingProcess();
         System.out.println(testingResult);
     }
