@@ -1,15 +1,19 @@
 package ru.nchernetsov.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.dao.StudentDaoMock;
 import ru.nchernetsov.domain.TestingResult;
 import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
+import ru.nchernetsov.service.config.LocaleSettingsLoader;
+import ru.nchernetsov.service.config.TestsSettingsLoader;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -17,7 +21,18 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestingServiceImplTest {
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private TestsSettingsLoader testsSettingsLoader;
+
+    @Autowired
+    private LocaleSettingsLoader localeSettingsLoader;
 
     @Test
     public void performTestingProcessTest() {
@@ -30,12 +45,8 @@ public class TestingServiceImplTest {
         QuestionService questionService = new QuestionServiceImpl();
         ConsoleService consoleService = new ConsoleServiceImpl();
 
-        TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService, messageSource());
-
-        // устанавливаем значение property для теста
-        ReflectionTestUtils.setField(testingService, "testFilesFolder", "tests");
-        ReflectionTestUtils.setField(testingService, "testThreshold", 75);
-        ReflectionTestUtils.setField(testingService, "chosenLocale", "ru");
+        TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService,
+                messageSource, testsSettingsLoader, localeSettingsLoader);
 
         TestingResult testingResult = testingService.performTestingProcess();
 
@@ -47,20 +58,13 @@ public class TestingServiceImplTest {
         assertEquals(4, testingResult.getRightAnswersCount());
 
         assertEquals(Arrays.asList(
-            Collections.singletonList(3),
-            Collections.singletonList(4),
-            Arrays.asList(1, 2),
-            Collections.singletonList(2),
-            Collections.singletonList(3)),
-            testingResult.getChooseAnswers());
+                Collections.singletonList(3),
+                Collections.singletonList(4),
+                Arrays.asList(1, 2),
+                Collections.singletonList(2),
+                Collections.singletonList(3)),
+                testingResult.getChooseAnswers());
 
         assertEquals(80, testingResult.rightAnswersPercent());
-    }
-
-    private MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("i18n/bundle");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
     }
 }

@@ -2,7 +2,6 @@ package ru.nchernetsov.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import ru.nchernetsov.domain.TestingResult;
 import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
+import ru.nchernetsov.service.config.LocaleSettingsLoader;
+import ru.nchernetsov.service.config.TestsSettingsLoader;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,23 +36,21 @@ public class TestingServiceImpl implements TestingService {
 
     private final MessageSource messageSource;
 
-    @Value("${tests.folder}")
-    private String testFilesFolder;
+    private final TestsSettingsLoader testsSettingsLoader;
 
-    @Value("${tests.threshold}")
-    private int testThreshold;
-
-    @Value("${locale}")
-    private String chosenLocale;
+    private final LocaleSettingsLoader localeSettingsLoader;
 
     private Locale locale;
 
     @Autowired
-    TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService, MessageSource messageSource) {
+    TestingServiceImpl(StudentDao studentDao, QuestionService questionService, ConsoleService consoleService,
+                       MessageSource messageSource, TestsSettingsLoader testsSettingsLoader, LocaleSettingsLoader localeSettingsLoader) {
         this.studentDao = studentDao;
         this.questionService = questionService;
         this.consoleService = consoleService;
         this.messageSource = messageSource;
+        this.testsSettingsLoader = testsSettingsLoader;
+        this.localeSettingsLoader = localeSettingsLoader;
     }
 
     @Override
@@ -63,15 +62,15 @@ public class TestingServiceImpl implements TestingService {
         TestingResult testingResult = testAllQuestions(student, questions);
 
         consoleService.writeInConsole(getMessage("respected") + SPACE + student.getFirstName() + SPACE + student.getLastName() + EXCLAMATION_POINT + SPACE +
-            getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE +
-            getMessage("points") + SPACE + getMessage("from") + SPACE + testingResult.getQuestionIds().size());
+                getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE +
+                getMessage("points") + SPACE + getMessage("from") + SPACE + testingResult.getQuestionIds().size());
 
-        if (testingResult.rightAnswersPercent() >= testThreshold) {
+        if (testingResult.rightAnswersPercent() >= testsSettingsLoader.getThreshold()) {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
+                    testingResult.rightAnswersPercent() + " >= " + testsSettingsLoader.getThreshold() + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
         } else {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
+                    testingResult.rightAnswersPercent() + " >= " + testsSettingsLoader.getThreshold() + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
         }
         consoleService.writeInConsole(getMessage("test.summary") + COLON + SPACE + testingResult);
 
@@ -94,7 +93,7 @@ public class TestingServiceImpl implements TestingService {
 
     private List<Question> readTestFileQuestions() {
         consoleService.writeInConsole(getMessage("select.file") + COLON);
-        List<String> testFileNamesList = getFileNamesFromResourceFolder(testFilesFolder + "/" + locale);
+        List<String> testFileNamesList = getFileNamesFromResourceFolder(testsSettingsLoader.getFolder() + "/" + locale);
         testFileNamesList.sort(String::compareTo);
         for (int i = 0; i < testFileNamesList.size(); i++) {
             consoleService.writeInConsole((i + 1) + " : " + testFileNamesList.get(i));
@@ -143,15 +142,15 @@ public class TestingServiceImpl implements TestingService {
             consoleService.writeInConsole(question.getAnswersVariants().get(i));
         }
         consoleService.writeInConsole(getMessage("select.correct.answers") + DOT + SPACE +
-            getMessage("enter.selected.answers"));
+                getMessage("enter.selected.answers"));
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
             exit();
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
-            .map(String::trim)
-            .map(Integer::parseInt)
-            .collect(Collectors.toList());
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
         consoleService.writeInConsole(getMessage("you.choose") + COLON + SPACE + studentAnswers);
         consoleService.writeInConsole(getMessage("right.answers") + COLON + SPACE + question.getRightAnswersNumbers());
         questionIds.add(question.getId());
@@ -171,7 +170,7 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private void setLocale() {
-        switch (chosenLocale) {
+        switch (localeSettingsLoader.getLocale()) {
             case "en":
                 locale = Locale.ENGLISH;
                 break;
@@ -179,7 +178,7 @@ public class TestingServiceImpl implements TestingService {
                 locale = new Locale("ru");
                 break;
             default:
-                throw new UnsupportedOperationException("Locale " + chosenLocale + " is not supported");
+                throw new UnsupportedOperationException("Locale " + localeSettingsLoader.getLocale() + " is not supported");
         }
     }
 
@@ -189,6 +188,6 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private String getClasspathFile(String fileName) {
-        return "classpath:" + testFilesFolder + FILE_SEPARATOR + locale + FILE_SEPARATOR + fileName;
+        return "classpath:" + testsSettingsLoader.getFolder() + FILE_SEPARATOR + locale + FILE_SEPARATOR + fileName;
     }
 }

@@ -1,16 +1,16 @@
-package ru.nchernetsov.service;
+package ru.nchernetsov.service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.nchernetsov.config.ApplicationSettings;
 
 @Service
-public class MockDataLoader {
+public class ApplicationSettingsLoader {
     private final boolean loadMockData;
     private final double version;
 
     @Autowired
-    public MockDataLoader(ApplicationSettings settings) {
+    public ApplicationSettingsLoader(ApplicationSettings settings) {
         loadMockData = settings.isLoadMockData();
         version = settings.getVersion();
     }
