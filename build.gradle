@@ -9,39 +9,11 @@ buildscript {
 
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'application'
 
-    group 'ru.nchernetsov'
-    version '0.1-SNAPSHOT'
-
-    configurations {
-        provided
-    }
-
-    sourceSets {
-        main.compileClasspath += configurations.provided
-        test.compileClasspath += configurations.provided
-        test.runtimeClasspath += configurations.provided
-    }
-}
-
-subprojects {
     sourceCompatibility = 1.8
 
-    apply plugin: "io.spring.dependency-management"
-
     repositories {
+        jcenter()
         mavenCentral()
-    }
-
-    dependencies {
-        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta2'
-        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha4'
-
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
-        testCompile group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5Version
-        testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: junit5PlatformVersion
-        testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: junit5PlatformVersion
     }
 }
