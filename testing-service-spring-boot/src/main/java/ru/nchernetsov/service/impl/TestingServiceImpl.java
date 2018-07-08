@@ -3,8 +3,6 @@ package ru.nchernetsov.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,7 @@ import static ru.nchernetsov.utils.Utils.listEquals;
 @Slf4j
 @Service
 @PropertySource("classpath:application.yml")
-public class TestingServiceImpl implements TestingService, ApplicationRunner {
+public class TestingServiceImpl implements TestingService {
 
     private final StudentDao studentDao;
 
@@ -40,7 +38,7 @@ public class TestingServiceImpl implements TestingService, ApplicationRunner {
     @Value("${tests.folder}")
     private String testFilesFolder;
 
-    @Value("${test.threshold}")
+    @Value("${tests.threshold}")
     private int testThreshold;
 
     @Value("${locale}")
@@ -192,12 +190,5 @@ public class TestingServiceImpl implements TestingService, ApplicationRunner {
 
     private String getClasspathFile(String fileName) {
         return "classpath:" + testFilesFolder + FILE_SEPARATOR + locale + FILE_SEPARATOR + fileName;
-    }
-
-    // Запускаем процесс тестирования после старта приложения
-    @Override
-    public void run(ApplicationArguments args) {
-        TestingResult testingResult = performTestingProcess();
-        System.out.println(testingResult);
     }
 }

@@ -11,7 +11,15 @@ import java.io.InputStreamReader;
 @Slf4j
 @Service
 public class ConsoleServiceImpl implements ConsoleService {
-    private final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader bufferedReader;
+
+    public ConsoleServiceImpl() {
+        this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    public ConsoleServiceImpl(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
 
     @Override
     public String readFromConsole() {
