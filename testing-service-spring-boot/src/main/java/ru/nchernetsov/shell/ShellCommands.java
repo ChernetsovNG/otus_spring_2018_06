@@ -32,7 +32,7 @@ public class ShellCommands {
         }
     }
 
-    @ShellMethod("Say hello.")
+    @ShellMethod("Say hello")
     public String greet(@ShellOption(defaultValue = "World") String who) {
         return "Hello " + who;
     }
