@@ -9,6 +9,7 @@ import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.domain.Question;
 import ru.nchernetsov.domain.Student;
 import ru.nchernetsov.domain.TestingResult;
+import ru.nchernetsov.exception.StopTestException;
 import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
@@ -184,7 +185,7 @@ public class TestingServiceImpl implements TestingService {
 
     private void exit() {
         consoleService.writeInConsole(getMessage("exit.test.by.user") + EXCLAMATION_POINT);
-        System.exit(0);
+        throw new StopTestException();
     }
 
     private String getClasspathFile(String fileName) {

@@ -5,7 +5,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Import;
+import org.springframework.shell.jline.InteractiveShellApplicationRunner;
+import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.nchernetsov.TestApplicationRunner;
 import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.dao.StudentDaoMock;
 import ru.nchernetsov.domain.TestingResult;
@@ -22,7 +26,11 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = {
+        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
+        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
+})
+@Import(TestApplicationRunner.class)
 public class TestingServiceImplTest {
 
     @Autowired
