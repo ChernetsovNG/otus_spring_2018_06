@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     name: H2-DS
-    url: jdbc:h2:file:./library-info-app/src/data/library_db;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:file:./library-info-app/src/data/library_db;DB_CLOSE_ON_EXIT=TRUE
     data-username: sa
     password:
     driver-class-name: org.h2.Driver
