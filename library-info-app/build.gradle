@@ -22,9 +22,9 @@ repositories {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-jdbc')
-    compile('org.springframework.shell:spring-shell-starter:2.0.0.RELEASE')
-
-    runtime('com.h2database:h2')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    //compile('org.springframework.shell:spring-shell-starter:2.0.0.RELEASE')
+    compile('com.h2database:h2')
 
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     compileOnly('org.projectlombok:lombok')

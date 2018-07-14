@@ -1,0 +1,15 @@
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    name: H2-DS
+    url: jdbc:h2:file:./src/data/library_db;DB_CLOSE_ON_EXIT=FALSE
+    data-username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
