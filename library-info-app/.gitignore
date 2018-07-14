@@ -24,4 +24,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
-/src/data/library_db.trace.db
+data.trace.db
+/data/library_db.trace.db
