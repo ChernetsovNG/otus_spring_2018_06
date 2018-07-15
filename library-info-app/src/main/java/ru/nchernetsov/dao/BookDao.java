@@ -12,12 +12,16 @@ public interface BookDao {
 
     List<Book> getAll();
 
-    public void addBook(Book book);
+    void addBook(Book book);
 
-    public void deleteBook(Book book);
+    void deleteBook(Book book);
 
-    public void addAuthorToBook(Book book, Author author);
+    void addAuthorToBook(Book book, Author author);
 
-    public void addGenreToBook(Book book, Genre genre);
+    void addGenreToBook(Book book, Genre genre);
+
+    List<Book> getBooksByAuthor(Author author);
+
+    List<Book> getBooksByGenre(Genre genre);
 
 }

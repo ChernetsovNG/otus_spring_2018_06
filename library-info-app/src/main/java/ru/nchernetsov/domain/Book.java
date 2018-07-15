@@ -23,6 +23,14 @@ public class Book {
         this.title = title;
     }
 
+    public void addAuthor(Author author) {
+        this.authors.add(author);
+    }
+
+    public void addGenre(Genre genre) {
+        this.genres.add(genre);
+    }
+
     public void addAuthors(List<Author> authors) {
         this.authors.addAll(authors);
     }
