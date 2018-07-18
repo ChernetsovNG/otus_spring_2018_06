@@ -1,12 +1,11 @@
 package ru.nchernetsov.domain;
 
-import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-@Getter
 @ToString
 public class Book {
 
@@ -37,5 +36,21 @@ public class Book {
 
     public void addGenres(List<Genre> genres) {
         this.genres.addAll(genres);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Author> getAuthors() {
+        return Collections.unmodifiableList(authors);
+    }
+
+    public List<Genre> getGenres() {
+        return Collections.unmodifiableList(genres);
     }
 }

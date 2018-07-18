@@ -1,13 +1,11 @@
 package ru.nchernetsov.dao.impl;
 
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.nchernetsov.dao.AuthorDao;
 import ru.nchernetsov.domain.Author;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +21,15 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(long id) {
-        final HashMap<String, Object> param = new HashMap<>(1);
-        param.put("id", id);
-        return jdbc.queryForObject("SELECT * FROM AUTHORS WHERE ID = :id", param, new AuthorRowMapper());
+        final Map<String, Object> param = Collections.singletonMap("id", id);
+        return jdbc.queryForObject("SELECT * FROM AUTHORS WHERE ID = :id", param, (rs, rowNum) ->
+                new Author(rs.getInt("id"), rs.getString("name")));
     }
 
     @Override
     public List<Author> getAll() {
-        return jdbc.query("SELECT * FROM AUTHORS", new AuthorRowMapper());
+        return jdbc.query("SELECT * FROM AUTHORS", (rs, rowNum) ->
+                new Author(rs.getInt("id"), rs.getString("name")));
     }
 
     @Override
@@ -43,19 +42,9 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public void deleteAuthor(Author author) {
-        final HashMap<String, Object> param = new HashMap<>(1);
-        param.put("id", author.getId());
+        final Map<String, Object> param = Collections.singletonMap("id", author.getId());
         jdbc.update("DELETE FROM BOOKS_AUTHORS WHERE AUTHOR_ID = :id", param);
         jdbc.update("DELETE FROM AUTHORS WHERE ID = :id", param);
-    }
-
-    private static class AuthorRowMapper implements RowMapper<Author> {
-        @Override
-        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            return new Author(id, name);
-        }
     }
 
 }

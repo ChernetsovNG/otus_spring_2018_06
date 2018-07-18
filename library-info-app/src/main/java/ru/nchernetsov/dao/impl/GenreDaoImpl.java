@@ -1,13 +1,11 @@
 package ru.nchernetsov.dao.impl;
 
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.nchernetsov.dao.GenreDao;
 import ru.nchernetsov.domain.Genre;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +21,15 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre getById(long id) {
-        final HashMap<String, Object> param = new HashMap<>(1);
-        param.put("id", id);
-        return jdbc.queryForObject("SELECT * FROM GENRES WHERE ID = :id", param, new GenreRowMapper());
+        final Map<String, Object> param = Collections.singletonMap("id", id);
+        return jdbc.queryForObject("SELECT * FROM GENRES WHERE ID = :id", param, (rs, rowNum) ->
+                new Genre(rs.getInt("id"), rs.getString("name")));
     }
 
     @Override
     public List<Genre> getAll() {
-        return jdbc.query("SELECT * FROM GENRES", new GenreRowMapper());
+        return jdbc.query("SELECT * FROM GENRES", (rs, rowNum) ->
+                new Genre(rs.getInt("id"), rs.getString("name")));
     }
 
     @Override
@@ -43,20 +42,9 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public void deleteGenre(Genre genre) {
-        final HashMap<String, Object> param = new HashMap<>(1);
-        param.put("id", genre.getId());
+        final Map<String, Object> param = Collections.singletonMap("id", genre.getId());
         jdbc.update("DELETE FROM BOOKS_GENRES WHERE GENRE_ID = :id", param);
         jdbc.update("DELETE FROM GENRES WHERE ID = :id", param);
-    }
-
-    private static class GenreRowMapper implements RowMapper<Genre> {
-
-        @Override
-        public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            return new Genre(id, name);
-        }
     }
 
 }
