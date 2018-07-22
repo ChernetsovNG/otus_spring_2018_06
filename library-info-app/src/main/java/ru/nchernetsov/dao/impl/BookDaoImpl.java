@@ -1,24 +1,56 @@
 package ru.nchernetsov.dao.impl;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
-import ru.nchernetsov.dao.AuthorDao;
 import ru.nchernetsov.dao.BookDao;
-import ru.nchernetsov.dao.GenreDao;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Genre;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 public class BookDaoImpl implements BookDao {
+    @Override
+    public Book getById(long id) {
+        return null;
+    }
 
-    private final NamedParameterJdbcOperations jdbc;
+    @Override
+    public List<Book> getAll() {
+        return null;
+    }
+
+    @Override
+    public void addBook(Book book) {
+
+    }
+
+    @Override
+    public void deleteBook(Book book) {
+
+    }
+
+    @Override
+    public void addAuthorToBook(Book book, Author author) {
+
+    }
+
+    @Override
+    public void addGenreToBook(Book book, Genre genre) {
+
+    }
+
+    @Override
+    public List<Book> getBooksByAuthor(Author author) {
+        return null;
+    }
+
+    @Override
+    public List<Book> getBooksByGenre(Genre genre) {
+        return null;
+    }
+
+    /*private final NamedParameterJdbcOperations jdbc;
 
     private final AuthorDao authorDao;
 
@@ -139,6 +171,6 @@ public class BookDaoImpl implements BookDao {
         return booksGenresIds.stream()
                 .map(genreDao::getById)
                 .collect(Collectors.toList());
-    }
+    }*/
 
 }

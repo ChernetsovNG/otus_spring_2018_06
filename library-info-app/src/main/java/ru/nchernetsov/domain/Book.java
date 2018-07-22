@@ -1,56 +1,78 @@
 package ru.nchernetsov.domain;
 
-import lombok.ToString;
-
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@ToString
+@Entity
+@Table(name = "books")
 public class Book {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name = "title")
     private String title;
 
-    private List<Author> authors = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY,
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "books_authors",
+        joinColumns = {@JoinColumn(name = "book_id")},
+        inverseJoinColumns = {@JoinColumn(name = "author_id")})
+    private List<Author> authors;
 
-    private List<Genre> genres = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY,
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "books_genres",
+        joinColumns = {@JoinColumn(name = "book_id")},
+        inverseJoinColumns = {@JoinColumn(name = "genre_id")})
+    private List<Genre> genres;
 
-    public Book(long id, String title) {
-        this.id = id;
-        this.title = title;
-    }
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
-    public void addAuthor(Author author) {
-        this.authors.add(author);
-    }
-
-    public void addGenre(Genre genre) {
-        this.genres.add(genre);
-    }
-
-    public void addAuthors(List<Author> authors) {
-        this.authors.addAll(authors);
-    }
-
-    public void addGenres(List<Genre> genres) {
-        this.genres.addAll(genres);
+    public Book() {
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<Author> getAuthors() {
         return Collections.unmodifiableList(authors);
     }
 
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
+
     public List<Genre> getGenres() {
         return Collections.unmodifiableList(genres);
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public List<Comment> getComments() {
+        return Collections.unmodifiableList(comments);
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

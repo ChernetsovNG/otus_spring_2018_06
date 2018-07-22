@@ -3,9 +3,12 @@ server:
   port: 8080
 
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
   datasource:
     name: H2-DS
-    url: jdbc:h2:file:./library-info-app/data/library_db
+    url: jdbc:h2:mem:library_db
     data-username: sa
     password:
     driver-class-name: org.h2.Driver

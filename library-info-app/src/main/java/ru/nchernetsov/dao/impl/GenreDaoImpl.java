@@ -1,19 +1,34 @@
 package ru.nchernetsov.dao.impl;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.nchernetsov.dao.GenreDao;
 import ru.nchernetsov.domain.Genre;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class GenreDaoImpl implements GenreDao {
+    @Override
+    public Genre getById(long id) {
+        return null;
+    }
 
-    private final NamedParameterJdbcOperations jdbc;
+    @Override
+    public List<Genre> getAll() {
+        return null;
+    }
+
+    @Override
+    public void addGenre(Genre genre) {
+
+    }
+
+    @Override
+    public void deleteGenre(Genre genre) {
+
+    }
+
+    /*private final NamedParameterJdbcOperations jdbc;
 
     public GenreDaoImpl(NamedParameterJdbcOperations jdbc) {
         this.jdbc = jdbc;
@@ -45,6 +60,6 @@ public class GenreDaoImpl implements GenreDao {
         final Map<String, Object> param = Collections.singletonMap("id", genre.getId());
         jdbc.update("DELETE FROM BOOKS_GENRES WHERE GENRE_ID = :id", param);
         jdbc.update("DELETE FROM GENRES WHERE ID = :id", param);
-    }
+    }*/
 
 }

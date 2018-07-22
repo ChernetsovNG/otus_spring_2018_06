@@ -24,4 +24,11 @@ allprojects {
         mavenCentral()
         maven { url "https://repo.spring.io/milestone" }
     }
+
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
+    }
 }

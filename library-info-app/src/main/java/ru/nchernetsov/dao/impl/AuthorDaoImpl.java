@@ -1,19 +1,34 @@
 package ru.nchernetsov.dao.impl;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.nchernetsov.dao.AuthorDao;
 import ru.nchernetsov.domain.Author;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class AuthorDaoImpl implements AuthorDao {
+    @Override
+    public Author getById(long id) {
+        return null;
+    }
 
-    private final NamedParameterJdbcOperations jdbc;
+    @Override
+    public List<Author> getAll() {
+        return null;
+    }
+
+    @Override
+    public void addAuthor(Author author) {
+
+    }
+
+    @Override
+    public void deleteAuthor(Author author) {
+
+    }
+
+    /*private final NamedParameterJdbcOperations jdbc;
 
     public AuthorDaoImpl(NamedParameterJdbcOperations jdbc) {
         this.jdbc = jdbc;
@@ -46,5 +61,5 @@ public class AuthorDaoImpl implements AuthorDao {
         jdbc.update("DELETE FROM BOOKS_AUTHORS WHERE AUTHOR_ID = :id", param);
         jdbc.update("DELETE FROM AUTHORS WHERE ID = :id", param);
     }
-
+*/
 }
