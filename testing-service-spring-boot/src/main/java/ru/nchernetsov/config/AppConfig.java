@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import ru.nchernetsov.dao.StudentDao;
-import ru.nchernetsov.dao.StudentDaoMock;
+import ru.nchernetsov.repository.StudentDao;
+import ru.nchernetsov.repository.StudentDaoMock;
 
 import static ru.nchernetsov.utils.Constants.FILE_SEPARATOR;
 

@@ -13,15 +13,17 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-        mappedBy = "genres")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "genres")
     private List<Book> books = new ArrayList<>();
 
     public Genre() {
+    }
+
+    public Genre(String name) {
+        this.name = name;
     }
 
     public long getId() {

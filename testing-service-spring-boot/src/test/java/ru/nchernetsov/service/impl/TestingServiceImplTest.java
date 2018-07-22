@@ -10,9 +10,9 @@ import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.TestApplicationRunner;
-import ru.nchernetsov.dao.StudentDao;
-import ru.nchernetsov.dao.StudentDaoMock;
 import ru.nchernetsov.domain.TestingResult;
+import ru.nchernetsov.repository.StudentDao;
+import ru.nchernetsov.repository.StudentDaoMock;
 import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
@@ -27,8 +27,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
-        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
-        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
+    InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
+    ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
 @Import(TestApplicationRunner.class)
 public class TestingServiceImplTest {
@@ -54,7 +54,7 @@ public class TestingServiceImplTest {
         ConsoleService consoleService = new ConsoleServiceImpl();
 
         TestingService testingService = new TestingServiceImpl(studentDao, questionService, consoleService,
-                messageSource, testsSettingsLoader, localeSettingsLoader);
+            messageSource, testsSettingsLoader, localeSettingsLoader);
 
         TestingResult testingResult = testingService.performTestingProcess();
 
@@ -66,12 +66,12 @@ public class TestingServiceImplTest {
         assertEquals(4, testingResult.getRightAnswersCount());
 
         assertEquals(Arrays.asList(
-                Collections.singletonList(3),
-                Collections.singletonList(4),
-                Arrays.asList(1, 2),
-                Collections.singletonList(2),
-                Collections.singletonList(3)),
-                testingResult.getChooseAnswers());
+            Collections.singletonList(3),
+            Collections.singletonList(4),
+            Arrays.asList(1, 2),
+            Collections.singletonList(2),
+            Collections.singletonList(3)),
+            testingResult.getChooseAnswers());
 
         assertEquals(80, testingResult.rightAnswersPercent());
     }

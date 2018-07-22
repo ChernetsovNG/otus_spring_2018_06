@@ -13,7 +13,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -30,10 +30,24 @@ public class Book {
         inverseJoinColumns = {@JoinColumn(name = "genre_id")})
     private List<Genre> genres;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     public Book() {
+    }
+
+    public Book(String title, List<Author> authors, List<Genre> genres) {
+        this.title = title;
+        this.authors = authors;
+        this.genres = genres;
+    }
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 
     public long getId() {

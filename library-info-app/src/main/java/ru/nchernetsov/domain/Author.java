@@ -13,15 +13,17 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-        mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "authors")
     private List<Book> books = new ArrayList<>();
 
     public Author() {
+    }
+
+    public Author(String name) {
+        this.name = name;
     }
 
     public long getId() {

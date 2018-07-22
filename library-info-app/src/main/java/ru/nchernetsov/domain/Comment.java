@@ -24,6 +24,11 @@ public class Comment {
     public Comment() {
     }
 
+    public Comment(String comment) {
+        this.comment = comment;
+        this.timestamp = LocalDateTime.now();
+    }
+
     public long getId() {
         return id;
     }
