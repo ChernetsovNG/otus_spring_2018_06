@@ -1,4 +1,4 @@
-package ru.nchernetsov.dao;
+package ru.nchernetsov.repository;
 
 import org.junit.jupiter.api.Test;
 import ru.nchernetsov.domain.Student;

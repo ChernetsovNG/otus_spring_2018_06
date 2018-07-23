@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import ru.nchernetsov.dao.StudentDao;
 import ru.nchernetsov.domain.Question;
 import ru.nchernetsov.domain.Student;
 import ru.nchernetsov.domain.TestingResult;
+import ru.nchernetsov.repository.StudentDao;
 import ru.nchernetsov.service.ConsoleService;
 import ru.nchernetsov.service.QuestionService;
 import ru.nchernetsov.service.TestingService;
@@ -63,15 +63,15 @@ public class TestingServiceImpl implements TestingService {
         TestingResult testingResult = testAllQuestions(student, questions);
 
         consoleService.writeInConsole(getMessage("respected") + SPACE + student.getFirstName() + SPACE + student.getLastName() + EXCLAMATION_POINT + SPACE +
-                getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE +
-                getMessage("points") + SPACE + getMessage("from") + SPACE + testingResult.getQuestionIds().size());
+            getMessage("tests.results") + SPACE + testingResult.getRightAnswersCount() + SPACE +
+            getMessage("points") + SPACE + getMessage("from") + SPACE + testingResult.getQuestionIds().size());
 
         if (testingResult.rightAnswersPercent() >= testThreshold) {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                    testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
+                testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.passed") + EXCLAMATION_POINT);
         } else {
             consoleService.writeInConsole(getMessage("correct.answers.percent") + COLON + SPACE +
-                    testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
+                testingResult.rightAnswersPercent() + " >= " + testThreshold + DOT + SPACE + getMessage("test.failed") + EXCLAMATION_POINT);
         }
         consoleService.writeInConsole(getMessage("test.summary") + COLON + SPACE + testingResult);
 
@@ -143,15 +143,15 @@ public class TestingServiceImpl implements TestingService {
             consoleService.writeInConsole(question.getAnswersVariants().get(i));
         }
         consoleService.writeInConsole(getMessage("select.correct.answers") + DOT + SPACE +
-                getMessage("enter.selected.answers"));
+            getMessage("enter.selected.answers"));
         String studentAnswersString = consoleService.readFromConsole();
         if (studentAnswersString.equalsIgnoreCase("exit")) {
             exit();
         }
         List<Integer> studentAnswers = Arrays.stream(studentAnswersString.split(","))
-                .map(String::trim)
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+            .map(String::trim)
+            .map(Integer::parseInt)
+            .collect(Collectors.toList());
         consoleService.writeInConsole(getMessage("you.choose") + COLON + SPACE + studentAnswers);
         consoleService.writeInConsole(getMessage("right.answers") + COLON + SPACE + question.getRightAnswersNumbers());
         questionIds.add(question.getId());
