@@ -29,6 +29,8 @@ public class CommentServiceImpl implements CommentService {
 
             Comment comment = new Comment(commentText);
 
+            comment.setBook(book);
+
             commentRepository.save(comment);
 
             book.addComment(comment);
