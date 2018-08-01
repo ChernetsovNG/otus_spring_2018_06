@@ -100,7 +100,7 @@ public class BookRepositoryTest {
     }
 
     @Test
-    public void getByTitleTest() {
+    public void findByTitleTest() {
         Optional<Book> bookOptional = bookRepository.findByTitle("Праздник, который всегда с тобой");
 
         assertThat(bookOptional).isPresent();
@@ -112,7 +112,7 @@ public class BookRepositoryTest {
     }
 
     @Test
-    public void removeByTitleTest() {
+    public void deleteByTitleTest() {
         bookRepository.deleteByTitle("Бойня номер пять, или Крестовый поход детей");
 
         List<Book> books = bookRepository.findAll();
