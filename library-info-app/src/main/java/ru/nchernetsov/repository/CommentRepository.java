@@ -1,15 +1,7 @@
 package ru.nchernetsov.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.nchernetsov.domain.Comment;
 
-import java.util.List;
-
-public interface CommentRepository {
-
-    Comment getById(long id);
-
-    List<Comment> getAll();
-
-    void insert(Comment comment);
-
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 }

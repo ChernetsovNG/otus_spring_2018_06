@@ -7,6 +7,8 @@ import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.repository.CommentRepository;
 import ru.nchernetsov.service.CommentService;
 
+import java.util.Optional;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -20,14 +22,19 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void addCommentToBook(String bookTitle, String commentText) {
-        Book book = bookRepository.getByTitle(bookTitle);
+        Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
 
-        Comment comment = new Comment(commentText);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
 
-        commentRepository.insert(comment);
+            Comment comment = new Comment(commentText);
 
-        book.addComment(comment);
+            commentRepository.save(comment);
 
-        bookRepository.update(book);
+            book.addComment(comment);
+
+            bookRepository.save(book);
+        }
     }
+
 }

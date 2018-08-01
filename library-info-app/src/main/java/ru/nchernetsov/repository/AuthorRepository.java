@@ -1,19 +1,12 @@
 package ru.nchernetsov.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.nchernetsov.domain.Author;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface AuthorRepository {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    Optional<Author> findByName(String name);
 
-    Author getById(long id);
-
-    List<Author> getAll();
-
-    void insert(Author author);
-
-    Author getByName(String name);
-
-    void removeByName(String name);
-
+    void deleteByName(String name);
 }
