@@ -1,6 +1,7 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
@@ -21,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void addCommentToBook(String bookTitle, String commentText) {
         Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
 
