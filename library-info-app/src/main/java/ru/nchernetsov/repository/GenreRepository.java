@@ -1,18 +1,12 @@
 package ru.nchernetsov.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.nchernetsov.domain.Genre;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface GenreRepository {
+public interface GenreRepository extends JpaRepository<Genre, Long> {
+    Optional<Genre> findByName(String name);
 
-    Genre getById(long id);
-
-    List<Genre> getAll();
-
-    void insert(Genre genre);
-
-    Genre getByName(String name);
-
-    void removeByName(String name);
+    void deleteByName(String name);
 }

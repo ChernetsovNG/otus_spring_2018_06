@@ -10,17 +10,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
-import ru.nchernetsov.repository.impl.BookRepositoryJpaImpl;
-import ru.nchernetsov.repository.impl.CommentRepositoryJpaImpl;
 import ru.nchernetsov.service.impl.CommentServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Import(value = {BookRepositoryJpaImpl.class, CommentRepositoryJpaImpl.class, CommentServiceImpl.class})
+@Import(value = {CommentServiceImpl.class})
 @ActiveProfiles("test")
 public class CommentServiceTest {
 
@@ -33,13 +32,17 @@ public class CommentServiceTest {
     @Test
     public void addCommentToBookTest1() {
         commentService.addCommentToBook("Праздник, который всегда с тобой",
-            "Я не особо люблю ни биографии, ни автобиографии писателей. Мне больше по душе погружаться в их придуманный мир. Но после прочтения \"Праздника...\" возникло неудержимое " +
-                "желание познакомиться с Хемингуэем поближе. Хотя я знакома с его произведениями, но почему-то именно эта книга дала толчок на более глубокое знакомство с писателем. Не буду " +
-                "рассказывать, что я о нем узнала, отзыв не об этом. Не знаю, что меня больше пленило в \"Празднике...\". Великолепнейшее описание Парижа, сам автор, его жизнь или люди, с " +
-                "которыми Эрнест дружил и общался, а может его неповторимый стиль и слог. Не знаю. Наверное все. Читала не отрываясь. Кстати, именно после этой книги также захотелось поближе" +
-                " познакомиться со Скоттом Фицджеральдом.");
+                "Я не особо люблю ни биографии, ни автобиографии писателей. Мне больше по душе погружаться в их придуманный мир. Но после прочтения \"Праздника...\" возникло неудержимое " +
+                        "желание познакомиться с Хемингуэем поближе. Хотя я знакома с его произведениями, но почему-то именно эта книга дала толчок на более глубокое знакомство с писателем. Не буду " +
+                        "рассказывать, что я о нем узнала, отзыв не об этом. Не знаю, что меня больше пленило в \"Празднике...\". Великолепнейшее описание Парижа, сам автор, его жизнь или люди, с " +
+                        "которыми Эрнест дружил и общался, а может его неповторимый стиль и слог. Не знаю. Наверное все. Читала не отрываясь. Кстати, именно после этой книги также захотелось поближе" +
+                        " познакомиться со Скоттом Фицджеральдом.");
 
-        Book book = bookRepository.getByTitle("Праздник, который всегда с тобой");
+        Optional<Book> bookOptional = bookRepository.findByTitle("Праздник, который всегда с тобой");
+
+        assertThat(bookOptional).isPresent();
+
+        Book book = bookOptional.get();
 
         List<Comment> comments = book.getComments();
 

@@ -1,11 +1,14 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.repository.CommentRepository;
 import ru.nchernetsov.service.CommentService;
+
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -19,15 +22,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void addCommentToBook(String bookTitle, String commentText) {
-        Book book = bookRepository.getByTitle(bookTitle);
+        Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
 
-        Comment comment = new Comment(commentText);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
 
-        commentRepository.insert(comment);
+            Comment comment = new Comment(commentText);
 
-        book.addComment(comment);
+            comment.setBook(book);
 
-        bookRepository.update(book);
+            commentRepository.save(comment);
+
+            book.addComment(comment);
+
+            bookRepository.save(book);
+        }
     }
+
 }

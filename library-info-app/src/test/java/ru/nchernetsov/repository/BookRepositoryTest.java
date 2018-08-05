@@ -4,18 +4,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Genre;
-import ru.nchernetsov.repository.impl.BookRepositoryJpaImpl;
-import ru.nchernetsov.repository.impl.GenreRepositoryJpaImpl;
 
-import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.Utils.getBookTitles;
@@ -23,12 +20,8 @@ import static ru.nchernetsov.Utils.getGenreNames;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Import(value = {BookRepositoryJpaImpl.class, GenreRepositoryJpaImpl.class})
 @ActiveProfiles("test")
 public class BookRepositoryTest {
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private BookRepository bookRepository;
@@ -38,60 +31,81 @@ public class BookRepositoryTest {
 
     @Test
     public void getByIdTest() {
-        assertThat(bookRepository.getById(13).getTitle()).isEqualTo("Война и мир");
+        Optional<Book> bookOptional = bookRepository.findById(13L);
+
+        assertThat(bookOptional).isPresent();
+
+        assertThat(bookOptional.get().getTitle()).isEqualTo("Война и мир");
     }
 
     @Test
     public void getAllTest() {
-        List<Book> books = bookRepository.getAll();
+        List<Book> books = bookRepository.findAll();
 
         assertThat(books).hasSize(6);
         assertThat(getBookTitles(books)).containsExactlyInAnyOrder(
-            "Бойня номер пять, или Крестовый поход детей", "Белый клык", "Оно", "Война и мир", "Философия Java",
-            "Праздник, который всегда с тобой");
+                "Бойня номер пять, или Крестовый поход детей", "Белый клык", "Оно", "Война и мир", "Философия Java",
+                "Праздник, который всегда с тобой");
     }
 
     @Test
     public void insertTest() {
-        Genre genre = genreRepository.getByName("Программирование");
+        Optional<Genre> genreOptional = genreRepository.findByName("Программирование");
+
+        assertThat(genreOptional).isPresent();
 
         Book newBook = new Book("Путь Ruby",
-            Collections.singletonList(new Author("Хэл Фултон")),
-            Collections.singletonList(genre));
+                Collections.singletonList(new Author("Хэл Фултон")),
+                Collections.singletonList(genreOptional.get()));
 
-        bookRepository.insert(newBook);
+        bookRepository.save(newBook);
 
-        List<Book> books = bookRepository.getAll();
+        List<Book> books = bookRepository.findAll();
 
         assertThat(books).hasSize(7);
         assertThat(getBookTitles(books)).containsExactlyInAnyOrder(
-            "Бойня номер пять, или Крестовый поход детей", "Белый клык", "Оно", "Война и мир", "Философия Java",
-            "Праздник, который всегда с тобой", "Путь Ruby");
+                "Бойня номер пять, или Крестовый поход детей", "Белый клык", "Оно", "Война и мир", "Философия Java",
+                "Праздник, который всегда с тобой", "Путь Ruby");
     }
 
     @Test
     public void updateTest() {
-        Book itBook = bookRepository.getById(12);
+        Optional<Book> itBookOptional = bookRepository.findById(12L);
 
-        Genre genre = genreRepository.getByName("Проза");
+        assertThat(itBookOptional).isPresent();
+
+        Book itBook = itBookOptional.get();
+
+        Optional<Genre> genreOptional = genreRepository.findByName("Проза");
+
+        assertThat(genreOptional).isPresent();
+
+        Genre genre = genreOptional.get();
 
         itBook.addGenre(genre);
 
-        bookRepository.update(itBook);
-        em.flush();
+        bookRepository.save(itBook);
 
-        Book itBookUpdated = bookRepository.getById(12);
+        Optional<Book> itBookUpdatedOptional = bookRepository.findById(12L);
+
+        assertThat(itBookUpdatedOptional).isPresent();
+
+        Book itBookUpdated = itBookUpdatedOptional.get();
 
         List<Genre> genres = itBookUpdated.getGenres();
 
         assertThat(genres).hasSize(3);
         assertThat(getGenreNames(genres)).containsExactlyInAnyOrder(
-            "Фантастика", "Хоррор", "Проза");
+                "Фантастика", "Хоррор", "Проза");
     }
 
     @Test
     public void getByTitleTest() {
-        Book book = bookRepository.getByTitle("Праздник, который всегда с тобой");
+        Optional<Book> bookOptional = bookRepository.findByTitle("Праздник, который всегда с тобой");
+
+        assertThat(bookOptional).isPresent();
+
+        Book book = bookOptional.get();
 
         assertThat(book.getTitle()).isEqualTo("Праздник, который всегда с тобой");
         assertThat(book.getAuthors().get(0).getName()).isEqualTo("Эрнест Хеммингуэй");
@@ -99,12 +113,13 @@ public class BookRepositoryTest {
 
     @Test
     public void removeByTitleTest() {
-        bookRepository.removeByTitle("Бойня номер пять, или Крестовый поход детей");
+        bookRepository.deleteByTitle("Бойня номер пять, или Крестовый поход детей");
 
-        List<Book> books = bookRepository.getAll();
+        List<Book> books = bookRepository.findAll();
 
         assertThat(books).hasSize(5);
         assertThat(getBookTitles(books)).containsExactlyInAnyOrder(
-            "Белый клык", "Оно", "Война и мир", "Философия Java", "Праздник, который всегда с тобой");
+                "Белый клык", "Оно", "Война и мир", "Философия Java", "Праздник, который всегда с тобой");
     }
+
 }
