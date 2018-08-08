@@ -1,13 +1,17 @@
 package ru.nchernetsov.repository;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Author;
+import ru.nchernetsov.domain.Book;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,18 +20,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.Utils.getAuthorNames;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @ActiveProfiles("test")
 public class AuthorRepositoryTest {
 
     @Autowired
     private AuthorRepository authorRepository;
 
-    @Test
-    public void findByIdTest() {
-        Optional<Author> authorOptional = authorRepository.findById(11L);
-        assertThat(authorOptional).isPresent();
-        assertThat(authorOptional.get().getName()).isEqualTo("Джек Лондон");
+    @Before
+    public void beforeEachTest() {
+        authorRepository.save(new Author("Курт Воннегут"));
+        authorRepository.save(new Author("Джек Лондон"));
+
+        Author stevenKing = new Author("Стивен Кинг");
+        stevenKing.setBooks(Collections.singletonList(new Book("Оно")));
+        authorRepository.save(stevenKing);
+
+        authorRepository.save(new Author("Лев Толстой"));
+        authorRepository.save(new Author("Брюс Эккель"));
+        authorRepository.save(new Author("Эрнест Хеммингуэй"));
+    }
+
+    @After
+    public void afterEachTest() {
+        authorRepository.deleteAll();
     }
 
     @Test
@@ -51,16 +67,16 @@ public class AuthorRepositoryTest {
     }
 
     @Test
-    public void getByName() {
+    public void findByNameTest() {
         Optional<Author> authorOptional = authorRepository.findByName("Стивен Кинг");
 
         assertThat(authorOptional).isPresent();
 
-        Author author = authorOptional.get();
+        Author readAuthor = authorOptional.get();
 
-        assertThat(author.getName()).isEqualTo("Стивен Кинг");
-        assertThat(author.getBooks()).hasSize(1);
-        assertThat(author.getBooks().get(0).getTitle()).isEqualTo("Оно");
+        assertThat(readAuthor.getName()).isEqualTo("Стивен Кинг");
+        assertThat(readAuthor.getBooks()).hasSize(1);
+        assertThat(readAuthor.getBooks().get(0).getTitle()).isEqualTo("Оно");
     }
 
     @Test

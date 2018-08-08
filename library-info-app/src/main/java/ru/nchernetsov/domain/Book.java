@@ -15,13 +15,17 @@ public class Book {
 
     private String title;
 
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<>();
 
-    private List<Genre> genres;
+    private List<Genre> genres = new ArrayList<>();
 
     private List<Comment> comments = new ArrayList<>();
 
     public Book() {
+    }
+
+    public Book(String title) {
+        this.title = title;
     }
 
     public Book(String title, List<Author> authors, List<Genre> genres) {
