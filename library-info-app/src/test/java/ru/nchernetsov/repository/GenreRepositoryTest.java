@@ -1,9 +1,11 @@
 package ru.nchernetsov.repository;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Book;
@@ -11,28 +13,31 @@ import ru.nchernetsov.domain.Genre;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.Utils.getBookTitles;
 import static ru.nchernetsov.Utils.getGenreNames;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @ActiveProfiles("test")
-public class GenreRepositoryTest {
+public class GenreRepositoryTest extends MongoDBTest {
 
     @Autowired
     private GenreRepository genreRepository;
 
-    @Test
-    public void getByIdTest() {
-        Optional<Genre> genreOptional = genreRepository.findById(14L);
+    @Autowired
+    private BookRepository bookRepository;
 
-        assertThat(genreOptional).isPresent();
+    @Before
+    public void beforeEachTest() {
+        saveAllData();
+    }
 
-        Genre genre = genreOptional.get();
-
-        assertThat(genre.getName()).isEqualTo("Программирование");
+    @After
+    public void afterEachTest() {
+        clearAllData();
     }
 
     @Test
@@ -65,7 +70,10 @@ public class GenreRepositoryTest {
 
         assertThat(genre.getName()).isEqualTo("Проза");
 
-        List<Book> books = genre.getBooks();
+        List<Book> books = genre.getBookIds().stream()
+                .map(bookId -> bookRepository.findById(bookId))
+                .map(Optional::get)
+                .collect(Collectors.toList());
 
         assertThat(books).hasSize(3);
         assertThat(getBookTitles(books)).containsExactlyInAnyOrder(

@@ -1,9 +1,11 @@
 package ru.nchernetsov.repository;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Author;
@@ -19,9 +21,9 @@ import static ru.nchernetsov.Utils.getBookTitles;
 import static ru.nchernetsov.Utils.getGenreNames;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @ActiveProfiles("test")
-public class BookRepositoryTest {
+public class BookRepositoryTest extends MongoDBTest {
 
     @Autowired
     private BookRepository bookRepository;
@@ -29,13 +31,14 @@ public class BookRepositoryTest {
     @Autowired
     private GenreRepository genreRepository;
 
-    @Test
-    public void getByIdTest() {
-        Optional<Book> bookOptional = bookRepository.findById(13L);
+    @Before
+    public void beforeEachTest() {
+        saveAllData();
+    }
 
-        assertThat(bookOptional).isPresent();
-
-        assertThat(bookOptional.get().getTitle()).isEqualTo("Война и мир");
+    @After
+    public void afterEachTest() {
+        clearAllData();
     }
 
     @Test
@@ -70,7 +73,7 @@ public class BookRepositoryTest {
 
     @Test
     public void updateTest() {
-        Optional<Book> itBookOptional = bookRepository.findById(12L);
+        Optional<Book> itBookOptional = bookRepository.findByTitle("Оно");
 
         assertThat(itBookOptional).isPresent();
 
@@ -86,7 +89,7 @@ public class BookRepositoryTest {
 
         bookRepository.save(itBook);
 
-        Optional<Book> itBookUpdatedOptional = bookRepository.findById(12L);
+        Optional<Book> itBookUpdatedOptional = bookRepository.findByTitle("Оно");
 
         assertThat(itBookUpdatedOptional).isPresent();
 

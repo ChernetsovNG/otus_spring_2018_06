@@ -5,7 +5,7 @@ import ru.nchernetsov.domain.Book;
 
 import java.util.Optional;
 
-public interface BookRepository extends MongoRepository<Book, Long> {
+public interface BookRepository extends MongoRepository<Book, String> {
     Optional<Book> findByTitle(String title);
 
     void deleteByTitle(String title);

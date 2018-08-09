@@ -15,12 +15,18 @@ public class Comment {
 
     private LocalDateTime timestamp;
 
-    private Book book;
+    private String bookId;
 
     public Comment() {
     }
 
     public Comment(String comment) {
+        this.comment = comment;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Comment(String id, String comment) {
+        this.id = id;
         this.comment = comment;
         this.timestamp = LocalDateTime.now();
     }
@@ -49,11 +55,11 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public Book getBook() {
-        return book;
+    public String getBook() {
+        return bookId;
     }
 
     public void setBook(Book book) {
-        this.book = book;
+        this.bookId = book.getId();
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Document(collection = "genres")
 public class Genre {
@@ -15,12 +16,17 @@ public class Genre {
 
     private String name;
 
-    private List<Book> books = new ArrayList<>();
+    private List<String> bookIds = new ArrayList<>();
 
     public Genre() {
     }
 
     public Genre(String name) {
+        this.name = name;
+    }
+
+    public Genre(String id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -40,11 +46,17 @@ public class Genre {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
-        return Collections.unmodifiableList(books);
+    public List<String> getBookIds() {
+        return Collections.unmodifiableList(bookIds);
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBookIds(List<Book> books) {
+        this.bookIds = books.stream().map(Book::getId).collect(Collectors.toList());
+    }
+
+    public void addBook(Book book) {
+        if (!bookIds.contains(book.getId())) {
+            bookIds.add(book.getId());
+        }
     }
 }

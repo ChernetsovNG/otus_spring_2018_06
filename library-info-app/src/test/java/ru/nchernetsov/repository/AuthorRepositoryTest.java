@@ -9,9 +9,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.nchernetsov.domain.Author;
-import ru.nchernetsov.domain.Book;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,28 +20,19 @@ import static ru.nchernetsov.Utils.getAuthorNames;
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @ActiveProfiles("test")
-public class AuthorRepositoryTest {
+public class AuthorRepositoryTest extends MongoDBTest {
 
     @Autowired
     private AuthorRepository authorRepository;
 
     @Before
     public void beforeEachTest() {
-        authorRepository.save(new Author("Курт Воннегут"));
-        authorRepository.save(new Author("Джек Лондон"));
-
-        Author stevenKing = new Author("Стивен Кинг");
-        stevenKing.setBooks(Collections.singletonList(new Book("Оно")));
-        authorRepository.save(stevenKing);
-
-        authorRepository.save(new Author("Лев Толстой"));
-        authorRepository.save(new Author("Брюс Эккель"));
-        authorRepository.save(new Author("Эрнест Хеммингуэй"));
+        saveAllData();
     }
 
     @After
     public void afterEachTest() {
-        authorRepository.deleteAll();
+        clearAllData();
     }
 
     @Test
@@ -75,8 +64,8 @@ public class AuthorRepositoryTest {
         Author readAuthor = authorOptional.get();
 
         assertThat(readAuthor.getName()).isEqualTo("Стивен Кинг");
-        assertThat(readAuthor.getBooks()).hasSize(1);
-        assertThat(readAuthor.getBooks().get(0).getTitle()).isEqualTo("Оно");
+        assertThat(readAuthor.getBookIds()).hasSize(1);
+        //assertThat(readAuthor.getBooks().get(0).getTitle()).isEqualTo("Оно");
     }
 
     @Test
