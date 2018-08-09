@@ -1,4 +1,4 @@
-package ru.nchernetsov.repository;
+package ru.nchernetsov;
 
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
@@ -7,26 +7,26 @@ import ru.nchernetsov.domain.Genre;
 
 import java.util.*;
 
-class TestData {
+public class TestData {
 
     private static final Map<Integer, Author> authorsMap = new HashMap<>();
     private static final Map<Integer, Book> booksMap = new HashMap<>();
     private static final Map<Integer, Comment> commentsMap = new HashMap<>();
     private static final Map<Integer, Genre> genresMap = new HashMap<>();
 
-    Map<Integer, Author> getAuthorsMap() {
+    public Map<Integer, Author> getAuthorsMap() {
         return authorsMap;
     }
 
-    Map<Integer, Book> getBooksMap() {
+    public Map<Integer, Book> getBooksMap() {
         return booksMap;
     }
 
-    Map<Integer, Comment> getCommentsMap() {
+    public Map<Integer, Comment> getCommentsMap() {
         return commentsMap;
     }
 
-    Map<Integer, Genre> getGenresMap() {
+    public Map<Integer, Genre> getGenresMap() {
         return genresMap;
     }
 

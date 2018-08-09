@@ -1,12 +1,15 @@
 package ru.nchernetsov.service;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.nchernetsov.MongoDBTest;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
@@ -18,16 +21,26 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @Import(value = {CommentServiceImpl.class})
 @ActiveProfiles("test")
-public class CommentServiceTest {
+public class CommentServiceTest extends MongoDBTest {
 
     @Autowired
     private CommentService commentService;
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Before
+    public void beforeEachTest() {
+        saveAllData();
+    }
+
+    @After
+    public void afterEachTest() {
+        clearAllData();
+    }
 
     @Test
     public void addCommentToBookTest1() {
