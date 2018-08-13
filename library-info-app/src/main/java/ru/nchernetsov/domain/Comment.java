@@ -1,25 +1,21 @@
 package ru.nchernetsov.domain;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comments")
+@Document(collection = "comments")
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
-    @Column(name = "comment", length = 32700)
     private String comment;
 
-    @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    private String bookId;
 
     public Comment() {
     }
@@ -29,11 +25,17 @@ public class Comment {
         this.timestamp = LocalDateTime.now();
     }
 
-    public long getId() {
+    public Comment(String id, String comment) {
+        this.id = id;
+        this.comment = comment;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,11 +55,11 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public Book getBook() {
-        return book;
+    public String getBook() {
+        return bookId;
     }
 
     public void setBook(Book book) {
-        this.book = book;
+        this.bookId = book.getId();
     }
 }

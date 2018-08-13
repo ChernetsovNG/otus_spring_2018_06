@@ -1,23 +1,22 @@
 package ru.nchernetsov.domain;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "authors")
+@Document(collection = "authors")
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
-    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "authors")
-    private List<Book> books = new ArrayList<>();
+    private List<String> bookIds = new ArrayList<>();
 
     public Author() {
     }
@@ -26,11 +25,16 @@ public class Author {
         this.name = name;
     }
 
-    public long getId() {
+    public Author(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,11 +46,19 @@ public class Author {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
-        return Collections.unmodifiableList(books);
+    public List<String> getBookIds() {
+        return Collections.unmodifiableList(bookIds);
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBookIds(List<Book> books) {
+        this.bookIds = books.stream().map(Book::getId).collect(Collectors.toList());
     }
+
+    public void addBook(Book book) {
+        if (!bookIds.contains(book.getId())) {
+            bookIds.add(book.getId());
+        }
+    }
+
+
 }

@@ -1,15 +1,19 @@
 package ru.nchernetsov.repository;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.nchernetsov.MongoDBTest;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,31 +21,40 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @ActiveProfiles("test")
-public class CommentRepositoryTest {
+public class CommentRepositoryTest extends MongoDBTest {
 
     @Autowired
     private CommentRepository commentRepository;
 
-    @Test
-    public void getByIdTest() {
-        Optional<Comment> commentOptional = commentRepository.findById(11L);
+    @Autowired
+    private BookRepository bookRepository;
 
-        assertThat(commentOptional).isPresent();
-
-        Comment comment = commentOptional.get();
-
-        assertThat(comment.getComment()).contains("одно из лучших произведений");
-        assertThat(comment.getBook().getTitle()).isEqualTo("Бойня номер пять, или Крестовый поход детей");
+    @Before
+    public void beforeEachTest() {
+        saveAllData();
     }
+
+    @After
+    public void afterEachTest() {
+        clearAllData();
+    }
+
 
     @Test
     public void getAllTest() {
         List<Comment> comments = commentRepository.findAll();
         assertThat(comments).hasSize(4);
 
-        Set<String> commentBooks = comments.stream().map(Comment::getBook).map(Book::getTitle).collect(Collectors.toSet());
+        Set<String> commentBooks = comments.stream()
+                .map(Comment::getBook)
+                .filter(Objects::nonNull)
+                .map(bookId -> bookRepository.findById(bookId))
+                .map(Optional::get)
+                .map(Book::getTitle)
+                .collect(Collectors.toSet());
+
         assertThat(commentBooks).containsExactlyInAnyOrder(
                 "Бойня номер пять, или Крестовый поход детей", "Оно");
     }

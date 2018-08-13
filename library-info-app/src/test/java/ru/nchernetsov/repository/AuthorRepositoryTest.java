@@ -1,11 +1,14 @@
 package ru.nchernetsov.repository;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.nchernetsov.MongoDBTest;
 import ru.nchernetsov.domain.Author;
 
 import java.util.List;
@@ -16,18 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.Utils.getAuthorNames;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
 @ActiveProfiles("test")
-public class AuthorRepositoryTest {
+public class AuthorRepositoryTest extends MongoDBTest {
 
     @Autowired
     private AuthorRepository authorRepository;
 
-    @Test
-    public void findByIdTest() {
-        Optional<Author> authorOptional = authorRepository.findById(11L);
-        assertThat(authorOptional).isPresent();
-        assertThat(authorOptional.get().getName()).isEqualTo("Джек Лондон");
+    @Before
+    public void beforeEachTest() {
+        saveAllData();
+    }
+
+    @After
+    public void afterEachTest() {
+        clearAllData();
     }
 
     @Test
@@ -51,16 +57,16 @@ public class AuthorRepositoryTest {
     }
 
     @Test
-    public void getByName() {
+    public void findByNameTest() {
         Optional<Author> authorOptional = authorRepository.findByName("Стивен Кинг");
 
         assertThat(authorOptional).isPresent();
 
-        Author author = authorOptional.get();
+        Author readAuthor = authorOptional.get();
 
-        assertThat(author.getName()).isEqualTo("Стивен Кинг");
-        assertThat(author.getBooks()).hasSize(1);
-        assertThat(author.getBooks().get(0).getTitle()).isEqualTo("Оно");
+        assertThat(readAuthor.getName()).isEqualTo("Стивен Кинг");
+        assertThat(readAuthor.getBookIds()).hasSize(1);
+        //assertThat(readAuthor.getBooks().get(0).getTitle()).isEqualTo("Оно");
     }
 
     @Test

@@ -1,39 +1,31 @@
 package ru.nchernetsov.domain;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Entity
-@Table(name = "books")
+@Document(collection = "books")
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
-    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "books_authors",
-        joinColumns = {@JoinColumn(name = "book_id")},
-        inverseJoinColumns = {@JoinColumn(name = "author_id")})
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY,
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "books_genres",
-        joinColumns = {@JoinColumn(name = "book_id")},
-        inverseJoinColumns = {@JoinColumn(name = "genre_id")})
-    private List<Genre> genres;
+    private List<Genre> genres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     public Book() {
+    }
+
+    public Book(String title) {
+        this.title = title;
     }
 
     public Book(String title, List<Author> authors, List<Genre> genres) {
@@ -50,11 +42,11 @@ public class Book {
         comments.add(comment);
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
