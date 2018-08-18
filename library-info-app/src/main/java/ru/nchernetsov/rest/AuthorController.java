@@ -21,7 +21,7 @@ public class AuthorController {
         this.authorRepository = authorRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/authors")
     public String listPage(Model model) {
         List<Author> authors = authorRepository.findAll();
         model.addAttribute("authors", authors);

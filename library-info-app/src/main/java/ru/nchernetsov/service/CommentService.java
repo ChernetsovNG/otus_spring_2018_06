@@ -1,13 +1,21 @@
 package ru.nchernetsov.service;
 
+import ru.nchernetsov.domain.Book;
+import ru.nchernetsov.domain.Comment;
+
+import java.util.List;
+
 public interface CommentService {
 
-    /**
-     * Добавить комментарий к книге
-     *
-     * @param bookTitle   - название книги
-     * @param commentText - текст комментария
-     */
-    void addCommentToBook(String bookTitle, String commentText);
+    void addCommentToBookByTitle(String bookTitle, Comment comment);
 
+    void addCommentToBookById(String bookId, Comment comment);
+
+    List<Comment> getBookComments(String bookId);
+
+    Comment createOrUpdateComment(Comment comment);
+
+    void deleteCommentById(String id);
+
+    Book getBookByCommentId(String commentId);
 }

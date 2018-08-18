@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Books</title>
+
+    <link rel="stylesheet" type="text/css" media="all" href="../static/css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Books</h1>
+
+    <p>
+        <a href="/books/edit" th:href="@{/books/edit}">Create</a>
+    </p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Genres</th>
+            <th>Comments</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}">1</td>
+            <td th:text="${book.title}">Title</td>
+            <td th:text="${book.authors}">Authors</td>
+            <td th:text="${book.genres}">Genres</td>
+            <td>
+                <a href="/comments/books/1" th:href="@{/comments/books/__${book.id}__}">Show comments</a>
+            </td>
+            <td>
+                <a href="/books/edit/1" th:href="@{/books/edit/__${book.id}__}">Edit</a>
+                <a href="/books/delete/1" th:href="@{/books/delete/__${book.id}__}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
