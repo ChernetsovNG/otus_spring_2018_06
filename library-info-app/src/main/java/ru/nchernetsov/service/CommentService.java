@@ -18,4 +18,6 @@ public interface CommentService {
     void deleteCommentById(String id);
 
     Book getBookByCommentId(String commentId);
+
+    List<Comment> getCommentsByIds(List<String> ids);
 }

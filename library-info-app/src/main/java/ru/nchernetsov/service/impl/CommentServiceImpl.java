@@ -8,6 +8,7 @@ import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.repository.CommentRepository;
 import ru.nchernetsov.service.CommentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,16 @@ public class CommentServiceImpl implements CommentService {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Comment> getCommentsByIds(List<String> ids) {
+        Iterable<Comment> comments = commentRepository.findAllById(ids);
+        List<Comment> commentList = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentList.add(comment);
+        }
+        return commentList;
     }
 
     private void addCommentToBook(Comment comment, Book book) {

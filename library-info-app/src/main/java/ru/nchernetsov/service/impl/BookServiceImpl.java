@@ -1,10 +1,7 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
-import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
-import ru.nchernetsov.domain.Comment;
-import ru.nchernetsov.domain.Genre;
 import ru.nchernetsov.repository.AuthorRepository;
 import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.repository.CommentRepository;
@@ -46,14 +43,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book createOrUpdateBook(Book book) {
-        List<Author> authors = book.getAuthors();
-        List<Genre> genres = book.getGenres();
-        List<Comment> comments = book.getComments();
-
-        authorRepository.saveAll(authors);
-        genreRepository.saveAll(genres);
-        commentRepository.saveAll(comments);
-
         return bookRepository.save(book);
     }
 

@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Books</title>
+    <title>Authors</title>
 
     <link rel="stylesheet" type="text/css" media="all" href="../static/css/bootstrap.min.css"
           th:href="@{/css/bootstrap.min.css}"/>
@@ -15,8 +15,8 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#" th:href="@{/books}">Books</a></li>
-            <li><a href="#" th:href="@{/authors}">Authors</a></li>
+            <li><a href="#" th:href="@{/books}">Books</a></li>
+            <li class="active"><a href="#" th:href="@{/authors}">Authors</a></li>
             <li><a href="#" th:href="@{/genres}">Genres</a></li>
         </ul>
     </div>
@@ -24,35 +24,27 @@
 
 <div class="container">
 
-    <h1>Books</h1>
+    <h1>Authors</h1>
 
     <p>
-        <a href="/books/edit" th:href="@{/books/edit}">Create</a>
+        <a href="/authors/edit" th:href="@{/authors/edit}">Create</a>
     </p>
 
     <table class="table">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Title</th>
-            <th>Authors</th>
-            <th>Genres</th>
-            <th>Comments</th>
+            <th>Name</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.id}">1</td>
-            <td th:text="${book.title}">Title</td>
-            <td th:text="${book.authors}">Authors</td>
-            <td th:text="${book.genres}">Genres</td>
+        <tr th:each="author : ${authors}">
+            <td th:text="${author.id}">Id</td>
+            <td th:text="${author.name}">Name</td>
             <td>
-                <a href="/comments/books/1" th:href="@{/comments/books/__${book.id}__}">Show comments</a>
-            </td>
-            <td>
-                <a href="/books/edit/1" th:href="@{/books/edit/__${book.id}__}">Edit</a>
-                <a href="/books/delete/1" th:href="@{/books/delete/__${book.id}__}">Delete</a>
+                <a href="/authors/edit/1" th:href="@{/authors/edit/__${author.id}__}">Edit</a>
+                <a href="/authors/delete/1" th:href="@{/authors/delete/__${author.id}__}">Delete</a>
             </td>
         </tr>
         </tbody>
