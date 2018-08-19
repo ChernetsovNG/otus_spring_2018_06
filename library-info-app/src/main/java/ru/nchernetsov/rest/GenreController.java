@@ -47,14 +47,14 @@ public class GenreController {
         genreService.createOrUpdateGenre(genre);
         model.addAttribute("genres", genreService.findAll());
 
-        return "genres";
+        return "redirect:/genres";
     }
 
     @GetMapping(value = "/genres/delete/{genreId}")
     public String deleteGenre(Model model, @PathVariable(name = "genreId") String genreId) {
         genreService.deleteGenreById(genreId);
         model.addAttribute("genres", genreService.findAll());
-        return "genres";
+        return "redirect:/genres";
     }
 
 }

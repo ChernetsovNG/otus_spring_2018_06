@@ -48,7 +48,7 @@ public class CommentController {
         model.addAttribute("bookTitle", bookService.findOne(bookId).getTitle());
         model.addAttribute("comments", commentService.getBookComments(bookId));
 
-        return "comments";
+        return "redirect:/comments";
     }
 
     @GetMapping(value = "/comments/delete/{commentId}")
@@ -60,6 +60,6 @@ public class CommentController {
         model.addAttribute("bookTitle", book.getTitle());
         model.addAttribute("comments", commentService.getBookComments(book.getId()));
 
-        return "comments";
+        return "redirect:/comments";
     }
 }

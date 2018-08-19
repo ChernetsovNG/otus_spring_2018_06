@@ -55,14 +55,14 @@ public class AuthorController {
         authorService.createOrUpdateAuthor(author);
         model.addAttribute("authors", authorService.findAll());
 
-        return "authors";
+        return "redirect:/authors";
     }
 
     @GetMapping(value = "/authors/delete/{authorId}")
     public String deleteAuthor(Model model, @PathVariable(name = "authorId") String authorId) {
         authorService.deleteAuthorById(authorId);
         model.addAttribute("authors", authorService.findAll());
-        return "authors";
+        return "redirect:/authors";
     }
 
 }
