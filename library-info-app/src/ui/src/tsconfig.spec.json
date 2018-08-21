@@ -14,5 +14,9 @@
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"
+  ],
+  "filesGlob": [
+    "main.ts",
+    "typings.d.ts"
   ]
 }

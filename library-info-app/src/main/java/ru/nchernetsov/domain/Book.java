@@ -99,7 +99,7 @@ public class Book {
 
     public void removeComment(String commentText) {
         for (Comment comment : comments) {
-            if (comment.getComment().equals(commentText)) {
+            if (comment.getText().equals(commentText)) {
                 comments.remove(comment);
                 break;
             }
@@ -130,6 +130,5 @@ public class Book {
             "title='" + title + '\'' +
             '}';
     }
-
 
 }
