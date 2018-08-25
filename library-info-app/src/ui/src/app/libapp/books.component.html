@@ -2,11 +2,6 @@
     <a class="navbar-brand">Library Info</a>
 </div>
 
-<!--<div class="mt-1 mb-1">-->
-<!--<input class="form-control" #bookTitle />-->
-<!--<button class="btn btn-primary mt-1" (click)="addBook(bookTitle.value)">Add</button>-->
-<!--</div>-->
-
 <div class="col-xl-9 p-3">
     <div class="form-inline float-left mr-1">
         <select class="form-control" [value]="booksPerPage"
@@ -43,8 +38,15 @@
             <td>{{ book.getAuthorsNames() }}</td>
             <td>{{ book.getGenresNames() }}</td>
             <td>Show comments</td>
-            <td>Edit; Remove</td>
+            <td>Edit;
+                Remove;
+                <button class="btn btn-success btn-sm pull-right" (click)="addBookToCart(book)">
+                    Add to Cart
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>
+
+    <cart-summary></cart-summary>
 </div>
