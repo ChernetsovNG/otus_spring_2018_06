@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
-import {StaticDatasource} from "./static.datasource";
+import {StaticDataSource} from "./static.datasource";
 import {Genre} from "./genre.model";
 
 @Injectable()
 export class GenreRepository {
     private genres: Genre[] = [];
 
-    constructor(private dataSource: StaticDatasource) {
+    constructor(private dataSource: StaticDataSource) {
         dataSource.getGenres().subscribe(data => {
             this.genres = data;
         });

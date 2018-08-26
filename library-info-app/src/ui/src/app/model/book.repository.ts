@@ -1,12 +1,12 @@
 import {Book} from "./book.model";
 import {Injectable} from "@angular/core";
-import {StaticDatasource} from "./static.datasource";
+import {StaticDataSource} from "./static.datasource";
 
 @Injectable()
 export class BookRepository {
     private books: Book[] = [];
 
-    constructor(private dataSource: StaticDatasource) {
+    constructor(private dataSource: StaticDataSource) {
         dataSource.getBooks().subscribe(data => {
             this.books = data;
         });
