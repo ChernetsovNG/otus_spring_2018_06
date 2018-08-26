@@ -1,5 +1,5 @@
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router";
-import {BooksComponent} from "./libapp/books.component";
+import {BooksComponent} from "./libapp/books/books.component";
 import {Injectable} from "@angular/core";
 
 @Injectable()

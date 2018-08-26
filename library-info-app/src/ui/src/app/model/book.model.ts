@@ -12,15 +12,4 @@ export class Book {
         public comments?: Comment[]) {
     }
 
-    getAuthorsNames() {
-        return this.authors.map(author => author.name).join(", ")
-    }
-
-    getGenresNames() {
-        return this.genres.map(genre => genre.name).join(", ")
-    }
-
-    getComments() {
-        return this.comments.map(comment => comment.text)
-    }
 }

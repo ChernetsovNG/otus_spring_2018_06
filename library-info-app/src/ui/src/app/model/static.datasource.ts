@@ -42,6 +42,10 @@ export class StaticDataSource {
         return from([this.books]);
     }
 
+    getComments(bookId: string): Observable<Comment[]> {
+        return from([]);
+    }
+
     saveOrder(order: Order): Observable<Order> {
         console.log(JSON.stringify(order));
         return from([order]);

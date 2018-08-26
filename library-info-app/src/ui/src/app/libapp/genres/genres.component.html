@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Library Info App</a>
+    <button class="btn btn-info btn-sm pull-right" (click)="showBooksList()">
+        Books
+    </button>
+    <button class="btn btn-info btn-sm pull-right" (click)="showAuthorsList()">
+        Authors
+    </button>
+    <button class="btn btn-danger btn-sm pull-right">
+        Genres
+    </button>
+</nav>
+
+<div class="col-xl-9 p-3">
+    <div class="form-inline float-left mr-1">
+        <select class="form-control" [value]="elementsPerPage"
+                (change)="changePageSize($event.target.value)">
+            <option value="3">3 per Page</option>
+            <option value="4">4 per Page</option>
+            <option value="6">6 per Page</option>
+            <option value="8">8 per Page</option>
+        </select>
+    </div>
+
+    <div class="btn-group float-right">
+        <button *counter="let page of pageCount" (click)="changePage(page)"
+                class="btn btn-outline-primary" [class.active]="page == selectedPage">
+            {{page}}
+        </button>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let genre of genres">
+            <td>{{ genre.id }}</td>
+            <td>{{ genre.name }}</td>
+            <td>Edit; Remove</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
