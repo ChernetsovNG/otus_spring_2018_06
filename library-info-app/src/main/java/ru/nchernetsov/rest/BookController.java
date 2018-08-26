@@ -38,8 +38,22 @@ public class BookController {
     }
 
     @PostMapping(value = "/books")
-    public ResponseEntity<?> editBook(@RequestBody Book book) {
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        return createOrUpdateBook(book);
+    }
 
+    @PutMapping(value = "/books")
+    public ResponseEntity<Book> updateBook(@RequestBody Book book) {
+        return createOrUpdateBook(book);
+    }
+
+    @DeleteMapping(value = "/books/{id}")
+    public ResponseEntity<?> deleteBook(@PathVariable(name = "id") String id) {
+        Book book = bookService.deleteBookById(id);
+        return ResponseEntity.ok(book);
+    }
+
+    private ResponseEntity<Book> createOrUpdateBook(@RequestBody Book book) {
         // Если у книги изменились авторы, то изменяем книги у авторов
         List<Author> authors = book.getAuthors();
         for (Author author : authors) {
@@ -54,15 +68,9 @@ public class BookController {
         }
         genreService.createOrUpdateGenreList(genres);
 
-        bookService.createOrUpdateBook(book);
+        Book savedBook = bookService.createOrUpdateBook(book);
 
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping(value = "/books/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable(name = "id") String id) {
-        bookService.deleteBookById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(savedBook);
     }
 
 }

@@ -15,7 +15,7 @@ public interface AuthorService {
 
     List<Author> createOrUpdateAuthorList(List<Author> authors);
 
-    void deleteAuthorById(String id);
+    Author deleteAuthorById(String id);
 
     List<Book> getAuthorBooks(String authorId);
 

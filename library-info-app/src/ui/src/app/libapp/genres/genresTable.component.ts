@@ -1,23 +1,23 @@
 import {Component} from "@angular/core";
 import {DataRepository} from "../../model/data.repository";
-import {Author} from "../../model/author.model";
 import {Router} from "@angular/router";
+import {Genre} from "../../model/genre.model";
 
 @Component({
-    selector: "authors",
+    selector: "genres",
     moduleId: module.id,
-    templateUrl: "authors.component.html"
+    templateUrl: "genres.component.html"
 })
-export class AuthorsComponent {
+export class GenresTableComponent {
     public elementsPerPage = 4;
     public selectedPage = 1;
 
     constructor(private repository: DataRepository, private router: Router) {
     }
 
-    get authors(): Author[] {
+    get genres(): Genre[] {
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
-        return this.repository.getAuthors().slice(pageIndex, pageIndex + this.elementsPerPage);
+        return this.repository.getGenres().slice(pageIndex, pageIndex + this.elementsPerPage);
     }
 
     changePage(newPage: number) {
@@ -30,15 +30,15 @@ export class AuthorsComponent {
     }
 
     get pageCount(): number {
-        return Math.ceil(this.repository.getAuthors().length / this.elementsPerPage);
+        return Math.ceil(this.repository.getGenres().length / this.elementsPerPage);
     }
 
     showBooksList() {
         this.router.navigateByUrl("/books");
     }
 
-    showGenresList() {
-        this.router.navigateByUrl("/genres");
+    showAuthorsList() {
+        this.router.navigateByUrl("/authors");
     }
 
 }

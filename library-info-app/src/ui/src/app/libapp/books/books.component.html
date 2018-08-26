@@ -1,17 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Library Info App</a>
-    <button class="btn btn-danger btn-sm pull-right">
+    <button class="btn btn-danger btn-sm pull-left">
         Books
     </button>
-    <button class="btn btn-info btn-sm pull-right" (click)="showAuthorsList()">
+    <button class="btn btn-info btn-sm pull-left" (click)="showAuthorsList()">
         Authors
     </button>
-    <button class="btn btn-info btn-sm pull-right" (click)="showGenresList()">
+    <button class="btn btn-info btn-sm pull-left" (click)="showGenresList()">
         Genres
     </button>
-    <button class="btn btn-info btn-sm btn-sm pull-right" routerLink="/admin">
+    <!--<button class="btn btn-info btn-sm btn-sm pull-left" routerLink="/admin">
         Admin
-    </button>
+    </button>-->
 </nav>
 
 <div class="col-xl-9 p-3">
@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let book of books">
+        <tr *ngFor="let book of getBooks()">
             <td>{{ book.id }}</td>
             <td>{{ book.title }}</td>
             <td>{{ bookAuthorNames(book) }}</td>

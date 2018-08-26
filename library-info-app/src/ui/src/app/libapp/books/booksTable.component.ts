@@ -10,14 +10,14 @@ import {BookService} from "./book.service";
     moduleId: module.id,
     templateUrl: "books.component.html"
 })
-export class BooksComponent {
+export class BooksTableComponent {
     public elementsPerPage = 4;
     public selectedPage = 1;
 
     constructor(private repository: DataRepository, private cart: Cart, private router: Router) {
     }
 
-    get books(): Book[] {
+    getBooks(): Book[] {
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
         return this.repository.getBooks().slice(pageIndex, pageIndex + this.elementsPerPage);
     }

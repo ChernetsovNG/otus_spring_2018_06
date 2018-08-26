@@ -2,7 +2,6 @@ package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
@@ -26,20 +25,20 @@ public class AuthorController {
         return authorService.findAll();
     }
 
-    @PostMapping(value = "/authors")
-    public ResponseEntity<?> editAuthor(@RequestBody Author author) {
+    @PostMapping(value = "/authors/edit")
+    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
 
-        authorService.createOrUpdateAuthor(author);
+        Author createdAuthor = authorService.createOrUpdateAuthor(author);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(createdAuthor);
     }
 
     @DeleteMapping(value = "/authors/{authorId}")
-    public ResponseEntity<?> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
-        authorService.deleteAuthorById(authorId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Author> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
+        Author author = authorService.deleteAuthorById(authorId);
+        return ResponseEntity.ok(author);
     }
 
 }

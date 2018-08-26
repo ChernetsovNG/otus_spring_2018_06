@@ -1,7 +1,6 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Book;
@@ -30,7 +29,7 @@ public class CommentController {
         return book.getComments();
     }
 
-    @PostMapping(value = "/comments/add")
+    @PostMapping(value = "/comments")
     public ResponseEntity<?> addComment(String bookId, Comment comment) {
         commentService.addCommentToBookById(bookId, comment);
         return ResponseEntity.ok().build();
