@@ -23,6 +23,7 @@ import {GenresModule} from "./libapp/genres/genres.module";
             {path: "cart", component: CartDetailComponent, canActivate: [StoreFirstGuard]},
             {path: "checkout", component: CheckoutComponent, canActivate: [StoreFirstGuard]},
             {path: "comments/books/:bookId", component: CommentsComponent, canActivate: [StoreFirstGuard]},
+            {path: "admin", loadChildren: "./admin/admin.module#AdminModule", canActivate: [StoreFirstGuard]},
             {path: "**", redirectTo: "/books"}
         ])],
     providers: [StoreFirstGuard],
