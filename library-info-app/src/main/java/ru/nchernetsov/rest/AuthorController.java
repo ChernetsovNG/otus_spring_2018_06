@@ -8,6 +8,7 @@ import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.service.AuthorService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -27,12 +28,24 @@ public class AuthorController {
 
     @PostMapping(value = "/authors")
     public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+        author.setId(UUID.randomUUID().toString());
+
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
 
         Author createdAuthor = authorService.createOrUpdateAuthor(author);
 
         return ResponseEntity.ok(createdAuthor);
+    }
+
+    @PutMapping(value = "/authors")
+    public ResponseEntity<Author> updateAuthor(@RequestBody Author author) {
+        List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
+        author.setBookIds(authorBooks);
+
+        Author updatedAuthor = authorService.createOrUpdateAuthor(author);
+
+        return ResponseEntity.ok(updatedAuthor);
     }
 
     @DeleteMapping(value = "/authors/{authorId}")

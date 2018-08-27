@@ -6,29 +6,33 @@ import {Comment} from "../../model/comment.model";
 @Component({
     selector: "comments",
     moduleId: module.id,
-    templateUrl: "comments.component.html"
+    templateUrl: "commentsTable.component.html"
 })
-export class CommentsComponent {
+export class CommentsTableComponent {
     public elementsPerPage = 4;
     public selectedPage = 1;
 
-    public comments: Comment[];
+    private readonly bookId: string;
 
     constructor(private repository: DataRepository, private route: ActivatedRoute, private router: Router) {
+        this.bookId = this.route.snapshot.paramMap.get("bookId");
+    }
+
+    getBookId(): string {
+        return this.bookId;
+    }
+
+    getBookTitle(): string {
+        return this.repository.getBook(this.bookId).title;
     }
 
     getComments(): Comment[] {
-        const id = this.route.snapshot.paramMap.get("bookId");
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
-        this.comments = this.repository.getBook(id).comments.slice(pageIndex, pageIndex + this.elementsPerPage);
-        return this.comments;
+        return this.repository.getCommentsByBookId(this.bookId).slice(pageIndex, pageIndex + this.elementsPerPage);
     }
 
     deleteComment(id: string) {
-        this.repository.deleteComment(id)
-            .subscribe(c => {
-                this.comments.splice(this.comments.findIndex(c => c.id == id), 1);
-            });
+        this.repository.deleteComment(id);
     }
 
     changePage(newPage: number) {
@@ -41,8 +45,7 @@ export class CommentsComponent {
     }
 
     get pageCount(): number {
-        const id = this.route.snapshot.paramMap.get("bookId");
-        return Math.ceil(this.repository.getBook(id).comments.length / this.elementsPerPage);
+        return Math.ceil(this.repository.getBook(this.bookId).comments.length / this.elementsPerPage);
     }
 
     showBooksList() {

@@ -2,6 +2,7 @@ import {Book} from "./book.model";
 import {Injectable} from "@angular/core";
 import {Author} from "./author.model";
 import {Genre} from "./genre.model";
+import {Comment} from "./comment.model";
 import {RestDataSource} from "./rest.datasource";
 
 @Injectable()
@@ -9,6 +10,7 @@ export class DataRepository {
     private books: Book[] = [];
     private authors: Author[] = [];
     private genres: Genre[] = [];
+    private comments: Comment[] = [];
 
     constructor(private dataSource: RestDataSource) {
         dataSource.getBooks().subscribe(data => {
@@ -21,6 +23,10 @@ export class DataRepository {
 
         dataSource.getGenres().subscribe(data => {
             this.genres = data;
+        });
+
+        dataSource.getComments().subscribe(data => {
+            this.comments = data;
         });
     }
 
@@ -129,8 +135,35 @@ export class DataRepository {
 
     // comments
 
+    getComments(): Comment[] {
+        return this.comments;
+    }
+
+    getComment(id: string): Comment {
+        return this.comments.find(c => c.id == id);
+    }
+
+    getCommentsByBookId(bookId: string): Comment[] {
+        return this.comments.filter(c => c.bookId == bookId);
+    }
+
+    saveComment(comment: Comment) {
+        console.log(comment);
+        if (comment.id == null) {
+            this.dataSource.saveComment(comment)
+                .subscribe(c => this.comments.push(c));
+        } else {
+            this.dataSource.updateComment(comment)
+                .subscribe(c =>
+                    this.comments.splice(this.comments.findIndex(c => c.id == comment.id), 1, comment));
+        }
+    }
+
     deleteComment(id: string) {
-        return this.dataSource.deleteComment(id);
+        this.dataSource.deleteComment(id)
+            .subscribe(c => {
+                this.comments.splice(this.comments.findIndex(c => c.id == id), 1);
+            });
     }
 
 }

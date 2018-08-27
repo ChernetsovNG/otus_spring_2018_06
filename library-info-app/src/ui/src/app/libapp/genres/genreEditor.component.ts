@@ -1,27 +1,27 @@
 import {Component} from "@angular/core";
-import {Author} from "../../model/author.model";
 import {DataRepository} from "../../model/data.repository";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
+import {Genre} from "../../model/genre.model";
 
 @Component({
     moduleId: module.id,
-    templateUrl: "authorEditor.component.html"
+    templateUrl: "genreEditor.component.html"
 })
-export class AuthorEditorComponent {
+export class GenreEditorComponent {
     editing: boolean = false;
-    author: Author = new Author(null, null);
+    genre: Genre = new Genre(null, null);
 
     constructor(private repository: DataRepository, private router: Router, activeRoute: ActivatedRoute) {
         this.editing = activeRoute.snapshot.params["mode"] == "edit";
         if (this.editing) {
-            Object.assign(this.author, repository.getAuthor(activeRoute.snapshot.params["id"]));
+            Object.assign(this.genre, repository.getGenre(activeRoute.snapshot.params["id"]));
         }
     }
 
     save(form: NgForm) {
-        this.repository.saveAuthor(this.author);
-        this.router.navigateByUrl("/authors");
+        this.repository.saveGenre(this.genre);
+        this.router.navigateByUrl("/genres");
     }
 
 }

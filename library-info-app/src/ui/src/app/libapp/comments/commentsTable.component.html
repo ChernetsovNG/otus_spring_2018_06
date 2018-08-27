@@ -35,6 +35,9 @@
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
+            <th colspan="4">{{getBookTitle()}}</th>
+        </tr>
+        <tr>
             <th>Id</th>
             <th>Text</th>
             <th>Timestamp</th>
@@ -47,9 +50,10 @@
             <td>{{ comment.text }}</td>
             <td>{{ comment.timestamp }}</td>
             <td>
-                <button class="btn btn-sm btn-warning pull-left" [routerLink]="['/comments/edit', comment.id]">
-                    Edit
-                </button>
+                <!--<button class="btn btn-sm btn-warning pull-left"-->
+                <!--[routerLink]="['comments/books/', getBookId(), '/edit', comment.id]">-->
+                <!--Edit-->
+                <!--</button>-->
                 <button class="btn btn-sm btn-danger pull-left" (click)="deleteComment(comment.id)">
                     Delete
                 </button>
@@ -57,5 +61,8 @@
         </tr>
         </tbody>
     </table>
+    <button class="btn btn-primary" routerLink="/comments/books/{{getBookId()}}/create">
+        Create New Comment
+    </button>
 
 </div>

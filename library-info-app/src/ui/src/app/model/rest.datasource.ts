@@ -6,6 +6,7 @@ import {Injectable} from "@angular/core";
 import {Order} from "./order.model";
 import {Author} from "./author.model";
 import {Genre} from "./genre.model";
+import {Comment} from "./comment.model";
 
 const PROTOCOL = "http";
 const PORT = 3500;
@@ -98,15 +99,28 @@ export class RestDataSource {
 
     // Comments
 
-    getComments(bookId: string): Observable<Comment[]> {
+    getComments(): Observable<Comment[]> {
+        return this.http
+            .get(this.baseUrl + "/comments")
+            .pipe(map((value: Array<Comment>) => value));
+    }
+
+    getCommentsForBook(bookId: string): Observable<Comment[]> {
         return this.http
             .get(this.baseUrl + "/comments/books/" + bookId)
             .pipe(map((value: Array<Comment>) => value));
     }
 
     saveComment(comment: Comment): Observable<Comment> {
+        console.log(comment);
         return this.http
             .post(this.baseUrl + "/comments", comment)
+            .pipe(map((value: Comment) => value));
+    }
+
+    updateComment(comment: Comment): Observable<Comment> {
+        return this.http
+            .put(this.baseUrl + "/comments", comment)
             .pipe(map((value: Comment) => value));
     }
 

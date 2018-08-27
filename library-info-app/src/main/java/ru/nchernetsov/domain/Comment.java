@@ -60,18 +60,18 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public String getBook() {
+    public String getBookId() {
         return bookId;
     }
 
-    public void setBook(Book book) {
-        this.bookId = book.getId();
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 
     @Override
     public String toString() {
         return "Comment{" +
-            "text='" + text + '\'' +
-            '}';
+                "text='" + text + '\'' +
+                '}';
     }
 }

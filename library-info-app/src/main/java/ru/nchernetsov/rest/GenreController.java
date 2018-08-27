@@ -2,13 +2,13 @@ package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Genre;
 import ru.nchernetsov.service.GenreService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -27,13 +27,25 @@ public class GenreController {
     }
 
     @PostMapping(value = "/genres")
-    public ResponseEntity<?> editGenre(@RequestBody Genre genre) {
+    public ResponseEntity<Genre> createGenre(@RequestBody Genre genre) {
+        genre.setId(UUID.randomUUID().toString());
+
         List<Book> genreBooks = genreService.getGenreBooks(genre.getId());
         genre.setBookIds(genreBooks);
 
-        genreService.createOrUpdateGenre(genre);
+        Genre createdGenre = genreService.createOrUpdateGenre(genre);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(createdGenre);
+    }
+
+    @PutMapping(value = "/genres")
+    public ResponseEntity<Genre> updateGenre(@RequestBody Genre genre) {
+        List<Book> genreBooks = genreService.getGenreBooks(genre.getId());
+        genre.setBookIds(genreBooks);
+
+        Genre updatedGenre = genreService.createOrUpdateGenre(genre);
+
+        return ResponseEntity.ok(updatedGenre);
     }
 
     @DeleteMapping(value = "/genres/{genreId}")
