@@ -8,11 +8,12 @@ import {CartDetailComponent} from "../cart/cartDetail.component";
 import {CheckoutComponent} from "../cart/checkout.component";
 import {RouterModule} from "@angular/router";
 import {CounterModule} from "../../model/counter.module";
+import {BookEditorComponent} from "./bookEditor.component";
 
 @NgModule({
     imports: [ModelModule, BrowserModule, FormsModule, RouterModule, CounterModule],
-    declarations: [BooksTableComponent, CartSummaryComponent, CartDetailComponent, CheckoutComponent],
-    exports: [BooksTableComponent, CartDetailComponent, CheckoutComponent]
+    declarations: [BooksTableComponent, BookEditorComponent, CartSummaryComponent, CartDetailComponent, CheckoutComponent],
+    exports: [BooksTableComponent, BookEditorComponent, CartDetailComponent, CheckoutComponent]
 })
 export class BooksModule {
 }

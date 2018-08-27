@@ -16,10 +16,13 @@ import {GenresModule} from "./libapp/genres/genres.module";
 import {AuthorEditorComponent} from "./libapp/authors/authorEditor.component";
 import {GenreEditorComponent} from "./libapp/genres/genreEditor.component";
 import {CommentEditorComponent} from "./libapp/comments/commentEditor.component";
+import {BookEditorComponent} from "./libapp/books/bookEditor.component";
 
 @NgModule({
     imports: [BrowserModule, BooksModule, CommentsModule, AuthorsModule, GenresModule,
         RouterModule.forRoot([
+            {path: "books/:mode/:id", component: BookEditorComponent, canActivate: [StoreFirstGuard]},
+            {path: "books/:mode", component: BookEditorComponent, canActivate: [StoreFirstGuard]},
             {path: "books", component: BooksTableComponent, canActivate: [StoreFirstGuard]},
             {path: "authors/:mode/:id", component: AuthorEditorComponent, canActivate: [StoreFirstGuard]},
             {path: "authors/:mode", component: AuthorEditorComponent, canActivate: [StoreFirstGuard]},
@@ -29,7 +32,11 @@ import {CommentEditorComponent} from "./libapp/comments/commentEditor.component"
             {path: "genres", component: GenresTableComponent, canActivate: [StoreFirstGuard]},
             {path: "cart", component: CartDetailComponent, canActivate: [StoreFirstGuard]},
             {path: "checkout", component: CheckoutComponent, canActivate: [StoreFirstGuard]},
-            {path: "comments/books/:bookId/:mode/:id", component: CommentEditorComponent, canActivate: [StoreFirstGuard]},
+            {
+                path: "comments/books/:bookId/:mode/:id",
+                component: CommentEditorComponent,
+                canActivate: [StoreFirstGuard]
+            },
             {path: "comments/books/:bookId/:mode", component: CommentEditorComponent, canActivate: [StoreFirstGuard]},
             {path: "comments/books/:bookId", component: CommentsTableComponent, canActivate: [StoreFirstGuard]},
             {path: "admin", loadChildren: "./admin/admin.module#AdminModule", canActivate: [StoreFirstGuard]},
