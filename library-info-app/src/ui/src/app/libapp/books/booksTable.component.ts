@@ -8,7 +8,7 @@ import {BookService} from "./book.service";
 @Component({
     selector: "books",
     moduleId: module.id,
-    templateUrl: "books.component.html"
+    templateUrl: "booksTable.component.html"
 })
 export class BooksTableComponent {
     public elementsPerPage = 4;
@@ -20,6 +20,10 @@ export class BooksTableComponent {
     getBooks(): Book[] {
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
         return this.repository.getBooks().slice(pageIndex, pageIndex + this.elementsPerPage);
+    }
+
+    deleteBook(id: string) {
+        this.repository.deleteBook(id);
     }
 
     bookAuthorNames(book: Book): string {

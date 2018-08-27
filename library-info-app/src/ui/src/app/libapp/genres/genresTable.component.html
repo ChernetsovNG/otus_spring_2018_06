@@ -41,10 +41,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let genre of genres">
+        <tr *ngFor="let genre of getGenres()">
             <td>{{ genre.id }}</td>
             <td>{{ genre.name }}</td>
-            <td>Edit; Remove</td>
+            <td>
+                <button class="btn btn-sm btn-warning pull-left" [routerLink]="['/genres/edit', genre.id]">
+                    Edit
+                </button>
+                <button class="btn btn-sm btn-danger pull-left" (click)="deleteGenre(genre.id)">
+                    Delete
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -54,9 +54,14 @@
                     Show comments
                 </button>
             </td>
-            <td>Edit;
-                Remove;
-                <button class="btn btn-success btn-sm pull-right" (click)="addBookToCart(book)">
+            <td>
+                <button class="btn btn-sm btn-warning pull-left" [routerLink]="['/books/edit', book.id]">
+                    Edit
+                </button>
+                <button class="btn btn-sm btn-danger pull-left" (click)="deleteBook(book.id)">
+                    Delete
+                </button>
+                <button class="btn btn-success btn-sm pull-left" (click)="addBookToCart(book)">
                     Add to Cart
                 </button>
             </td>

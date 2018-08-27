@@ -25,7 +25,7 @@ public class AuthorController {
         return authorService.findAll();
     }
 
-    @PostMapping(value = "/authors/edit")
+    @PostMapping(value = "/authors")
     public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);

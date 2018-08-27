@@ -45,8 +45,7 @@
             <td>{{ author.id }}</td>
             <td>{{ author.name }}</td>
             <td>
-                <button class="btn btn-sm btn-warning"
-                        [routerLink]="['/authors/edit', author.id]">
+                <button class="btn btn-sm btn-warning" [routerLink]="['/authors/edit', author.id]">
                     Edit
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="deleteAuthor(author.id)">

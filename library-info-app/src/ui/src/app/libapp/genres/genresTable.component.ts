@@ -6,7 +6,7 @@ import {Genre} from "../../model/genre.model";
 @Component({
     selector: "genres",
     moduleId: module.id,
-    templateUrl: "genres.component.html"
+    templateUrl: "genresTable.component.html"
 })
 export class GenresTableComponent {
     public elementsPerPage = 4;
@@ -15,9 +15,13 @@ export class GenresTableComponent {
     constructor(private repository: DataRepository, private router: Router) {
     }
 
-    get genres(): Genre[] {
+    getGenres(): Genre[] {
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
         return this.repository.getGenres().slice(pageIndex, pageIndex + this.elementsPerPage);
+    }
+
+    deleteGenre(id: string) {
+        this.repository.deleteGenre(id);
     }
 
     changePage(newPage: number) {
