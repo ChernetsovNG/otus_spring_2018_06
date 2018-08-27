@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteCommentById(String id) {
+    public Comment deleteCommentById(String id) {
         Optional<Comment> commentOptional = commentRepository.findById(id);
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
@@ -66,7 +66,9 @@ public class CommentServiceImpl implements CommentService {
                 commentRepository.delete(comment);
                 bookRepository.save(book);
             }
+            return comment;
         }
+        return null;
     }
 
     @Override

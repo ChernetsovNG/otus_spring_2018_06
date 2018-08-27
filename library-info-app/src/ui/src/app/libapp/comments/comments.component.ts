@@ -12,13 +12,23 @@ export class CommentsComponent {
     public elementsPerPage = 4;
     public selectedPage = 1;
 
+    public comments: Comment[];
+
     constructor(private repository: DataRepository, private route: ActivatedRoute, private router: Router) {
     }
 
-    get comments(): Comment[] {
+    getComments(): Comment[] {
         const id = this.route.snapshot.paramMap.get("bookId");
         let pageIndex = (this.selectedPage - 1) * this.elementsPerPage;
-        return this.repository.getBook(id).comments.slice(pageIndex, pageIndex + this.elementsPerPage);
+        this.comments = this.repository.getBook(id).comments.slice(pageIndex, pageIndex + this.elementsPerPage);
+        return this.comments;
+    }
+
+    deleteComment(id: string) {
+        this.repository.deleteComment(id)
+            .subscribe(c => {
+                this.comments.splice(this.comments.findIndex(c => c.id == id), 1);
+            });
     }
 
     changePage(newPage: number) {

@@ -127,4 +127,10 @@ export class DataRepository {
             });
     }
 
+    // comments
+
+    deleteComment(id: string) {
+        return this.dataSource.deleteComment(id);
+    }
+
 }

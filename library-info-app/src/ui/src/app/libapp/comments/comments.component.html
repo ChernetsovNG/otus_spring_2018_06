@@ -42,11 +42,18 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let comment of comments">
+        <tr *ngFor="let comment of getComments()">
             <td>{{ comment.id }}</td>
             <td>{{ comment.text }}</td>
             <td>{{ comment.timestamp }}</td>
-            <td>Edit; Remove</td>
+            <td>
+                <button class="btn btn-sm btn-warning pull-left" [routerLink]="['/comments/edit', comment.id]">
+                    Edit
+                </button>
+                <button class="btn btn-sm btn-danger pull-left" (click)="deleteComment(comment.id)">
+                    Delete
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>
