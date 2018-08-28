@@ -1,6 +1,5 @@
 import {from, Observable} from "rxjs";
 import {Book} from "./book.model";
-import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from "@angular/core";
 import {Order} from "./order.model";
@@ -23,111 +22,93 @@ export class RestDataSource {
 
     getBooks(): Observable<Book[]> {
         return this.http
-            .get(this.baseUrl + "/books")
-            .pipe(map((value: Array<Book>) => value));
+            .get<Book[]>(this.baseUrl + "/books");
     }
 
     saveBook(book: Book): Observable<Book> {
         return this.http
-            .post(this.baseUrl + "/books", book)
-            .pipe(map((value: Book) => value));
+            .post<Book>(this.baseUrl + "/books", book);
     }
 
     updateBook(book: Book): Observable<Book> {
         return this.http
-            .put(this.baseUrl + "/books", book)
-            .pipe(map((value: Book) => value));
+            .put<Book>(this.baseUrl + "/books", book);
     }
 
     deleteBook(id: string): Observable<Book> {
         return this.http
-            .delete(this.baseUrl + `/books/${id}`)
-            .pipe(map((value: Book) => value));
+            .delete<Book>(this.baseUrl + `/books/${id}`);
     }
 
     // Authors
 
     getAuthors(): Observable<Author[]> {
         return this.http
-            .get(this.baseUrl + "/authors")
-            .pipe(map((value: Array<Author>) => value));
+            .get<Author[]>(this.baseUrl + "/authors");
     }
 
     saveAuthor(author: Author): Observable<Author> {
         return this.http
-            .post(this.baseUrl + "/authors", author)
-            .pipe(map((value: Author) => value));
+            .post<Author>(this.baseUrl + "/authors", author);
     }
 
     updateAuthor(author: Author): Observable<Author> {
         return this.http
-            .put(this.baseUrl + "/authors", author)
-            .pipe(map((value: Author) => value));
+            .put<Author>(this.baseUrl + "/authors", author);
     }
 
     deleteAuthor(id: string): Observable<Author> {
         return this.http
-            .delete(this.baseUrl + `/authors/${id}`)
-            .pipe(map((value: Author) => value));
+            .delete<Author>(this.baseUrl + `/authors/${id}`);
     }
 
     // Genres
 
     getGenres(): Observable<Genre[]> {
         return this.http
-            .get(this.baseUrl + "/genres")
-            .pipe(map((value: Array<Genre>) => value));
+            .get<Genre[]>(this.baseUrl + "/genres");
     }
 
     saveGenre(genre: Genre): Observable<Genre> {
         return this.http
-            .post(this.baseUrl + "/genres", genre)
-            .pipe(map((value: Genre) => value));
+            .post<Genre>(this.baseUrl + "/genres", genre);
     }
 
     updateGenre(genre: Genre): Observable<Genre> {
         return this.http
-            .put(this.baseUrl + "/genres", genre)
-            .pipe(map((value: Genre) => value));
+            .put<Genre>(this.baseUrl + "/genres", genre);
     }
 
     deleteGenre(id: string): Observable<Genre> {
         return this.http
-            .delete(this.baseUrl + `/genres/${id}`)
-            .pipe(map((value: Genre) => value));
+            .delete<Genre>(this.baseUrl + `/genres/${id}`);
     }
 
     // Comments
 
     getComments(): Observable<Comment[]> {
         return this.http
-            .get(this.baseUrl + "/comments")
-            .pipe(map((value: Array<Comment>) => value));
+            .get<Comment[]>(this.baseUrl + "/comments");
     }
 
     getCommentsForBook(bookId: string): Observable<Comment[]> {
         return this.http
-            .get(this.baseUrl + "/comments/books/" + bookId)
-            .pipe(map((value: Array<Comment>) => value));
+            .get<Comment[]>(this.baseUrl + "/comments/books/" + bookId);
     }
 
     saveComment(comment: Comment): Observable<Comment> {
-        console.log(comment);
         return this.http
-            .post(this.baseUrl + "/comments", comment)
-            .pipe(map((value: Comment) => value));
+            .post<Comment>(this.baseUrl + "/comments", comment);
     }
 
     updateComment(comment: Comment): Observable<Comment> {
         return this.http
-            .put(this.baseUrl + "/comments", comment)
-            .pipe(map((value: Comment) => value));
+            .put<Comment>(this.baseUrl + "/comments", comment);
     }
 
     deleteComment(id: string): Observable<Comment> {
         return this.http
-            .delete(this.baseUrl + `/comments/${id}`)
-            .pipe(map((value: Comment) => value));
+            .delete<Comment>(this.baseUrl + `/comments/${id}`);
     }
 
     // Orders
