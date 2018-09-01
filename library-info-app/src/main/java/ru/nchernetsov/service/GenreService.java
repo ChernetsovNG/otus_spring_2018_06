@@ -1,5 +1,7 @@
 package ru.nchernetsov.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Genre;
 
@@ -7,17 +9,17 @@ import java.util.List;
 
 public interface GenreService {
 
-    List<Genre> findAll();
+    Flux<Genre> findAll();
 
-    Genre findOne(String id);
+    Mono<Genre> findOne(String id);
 
-    Genre createOrUpdateGenre(Genre genre);
+    Mono<Genre> createOrUpdateGenre(Genre genre);
 
-    List<Genre> createOrUpdateGenreList(List<Genre> genres);
+    Flux<Genre> createOrUpdateGenreList(List<Genre> genres);
 
-    void deleteGenreById(String id);
+    Mono<Void> deleteGenreById(String id);
 
-    List<Book> getGenreBooks(String genreId);
+    Flux<Book> getGenreBooks(String genreId);
 
-    Genre getGenreByName(String name);
+    Mono<Genre> getGenreByName(String name);
 }

@@ -54,7 +54,7 @@ export class DataRepository {
 
     deleteBook(id: string) {
         this.dataSource.deleteBook(id)
-            .subscribe(b => {
+            .subscribe(() => {
                 this.books.splice(this.books.findIndex(b => b.id == id), 1);
             });
     }
@@ -127,7 +127,7 @@ export class DataRepository {
 
     deleteGenre(id: string) {
         this.dataSource.deleteGenre(id)
-            .subscribe(g => {
+            .subscribe(() => {
                 this.genres.splice(this.genres.findIndex(g => g.id == id), 1);
                 this.updateBooksList();
             });

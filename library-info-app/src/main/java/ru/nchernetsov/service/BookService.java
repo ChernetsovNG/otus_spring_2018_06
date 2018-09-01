@@ -1,16 +1,16 @@
 package ru.nchernetsov.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Book;
-
-import java.util.List;
 
 public interface BookService {
 
-    List<Book> findAll();
+    Flux<Book> findAll();
 
-    Book findOne(String id);
+    Mono<Book> findOne(String id);
 
-    Book createOrUpdateBook(Book book);
+    Mono<Book> createOrUpdateBook(Book book);
 
     Book deleteBookById(String id);
 }

@@ -33,17 +33,17 @@ public class InitApplicationService {
     public void initializeTestData() {
         LOGGER.info("Initialize test data");
 
-        authorRepository.deleteAll();
-        bookRepository.deleteAll();
-        commentRepository.deleteAll();
-        genreRepository.deleteAll();
+        authorRepository.deleteAll().then().block();
+        bookRepository.deleteAll().then().block();
+        commentRepository.deleteAll().then().block();
+        genreRepository.deleteAll().then().block();
 
         TestData testData = new TestData();
 
-        authorRepository.saveAll(testData.getAuthorsMap().values());
-        genreRepository.saveAll(testData.getGenresMap().values());
-        bookRepository.saveAll(testData.getBooksMap().values());
-        commentRepository.saveAll(testData.getCommentsMap().values());
+        authorRepository.saveAll(testData.getAuthorsMap().values()).then().block();
+        genreRepository.saveAll(testData.getGenresMap().values()).then().block();
+        bookRepository.saveAll(testData.getBooksMap().values()).then().block();
+        commentRepository.saveAll(testData.getCommentsMap().values()).then().block();
 
         LOGGER.info("Initialization completed");
     }

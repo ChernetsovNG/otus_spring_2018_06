@@ -1,5 +1,7 @@
 package ru.nchernetsov.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 
@@ -13,13 +15,13 @@ public interface CommentService {
 
     List<Comment> getBookComments(String bookId);
 
-    Comment createOrUpdateComment(Comment comment);
+    Mono<Comment> createOrUpdateComment(Comment comment);
 
     Comment deleteCommentById(String id);
 
-    Book getBookByCommentId(String commentId);
+    Mono<Book> getBookByCommentId(String commentId);
 
     List<Comment> getCommentsByIds(List<String> ids);
 
-    List<Comment> getAll();
+    Flux<Comment> getAll();
 }

@@ -1,8 +1,11 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.service.AuthorService;
@@ -22,7 +25,7 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public List<Author> getAuthors() {
+    public Flux<Author> getAuthors() {
         return authorService.findAll();
     }
 
@@ -33,9 +36,9 @@ public class AuthorController {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
 
-        Author createdAuthor = authorService.createOrUpdateAuthor(author);
+        Mono<Author> createdAuthor = authorService.createOrUpdateAuthor(author);
 
-        return ResponseEntity.ok(createdAuthor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthor.block());
     }
 
     @PutMapping(value = "/authors")
@@ -43,15 +46,15 @@ public class AuthorController {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
 
-        Author updatedAuthor = authorService.createOrUpdateAuthor(author);
+        Mono<Author> updatedAuthor = authorService.createOrUpdateAuthor(author);
 
-        return ResponseEntity.ok(updatedAuthor);
+        return ResponseEntity.ok(updatedAuthor.block());
     }
 
     @DeleteMapping(value = "/authors/{authorId}")
     public ResponseEntity<Author> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
-        Author author = authorService.deleteAuthorById(authorId);
-        return ResponseEntity.ok(author);
+        Mono<Author> author = authorService.deleteAuthorById(authorId);
+        return ResponseEntity.ok(author.block());
     }
 
 }

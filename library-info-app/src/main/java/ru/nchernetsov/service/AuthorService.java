@@ -1,5 +1,7 @@
 package ru.nchernetsov.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 
@@ -7,17 +9,17 @@ import java.util.List;
 
 public interface AuthorService {
 
-    List<Author> findAll();
+    Flux<Author> findAll();
 
-    Author findOne(String id);
+    Mono<Author> findOne(String id);
 
-    Author createOrUpdateAuthor(Author author);
+    Mono<Author> createOrUpdateAuthor(Author author);
 
-    List<Author> createOrUpdateAuthorList(List<Author> authors);
+    Flux<Author> createOrUpdateAuthorList(List<Author> authors);
 
-    Author deleteAuthorById(String id);
+    Mono<Author> deleteAuthorById(String id);
 
     List<Book> getAuthorBooks(String authorId);
 
-    Author getAuthorByName(String name);
+    Mono<Author> getAuthorByName(String name);
 }

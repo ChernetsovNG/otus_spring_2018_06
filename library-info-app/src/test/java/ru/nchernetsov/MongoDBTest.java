@@ -27,17 +27,17 @@ public class MongoDBTest {
     private TestData testData = new TestData();
 
     protected void saveAllData() {
-        authorRepository.saveAll(testData.getAuthorsMap().values());
-        bookRepository.saveAll(testData.getBooksMap().values());
-        commentRepository.saveAll(testData.getCommentsMap().values());
-        genreRepository.saveAll(testData.getGenresMap().values());
+        authorRepository.saveAll(testData.getAuthorsMap().values()).then().block();
+        bookRepository.saveAll(testData.getBooksMap().values()).then().block();
+        commentRepository.saveAll(testData.getCommentsMap().values()).then().block();
+        genreRepository.saveAll(testData.getGenresMap().values()).then().block();
     }
 
     protected void clearAllData() {
-        authorRepository.deleteAll();
-        bookRepository.deleteAll();
-        commentRepository.deleteAll();
-        genreRepository.deleteAll();
+        authorRepository.deleteAll().then().block();
+        bookRepository.deleteAll().then().block();
+        commentRepository.deleteAll().then().block();
+        genreRepository.deleteAll().then().block();
     }
 
 }

@@ -1,7 +1,10 @@
 package ru.nchernetsov.rest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Genre;
@@ -33,7 +36,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/books")
-    public List<Book> booksList() {
+    public Flux<Book> booksList() {
         return bookService.findAll();
     }
 
@@ -59,18 +62,18 @@ public class BookController {
         for (Author author : authors) {
             author.addBook(book);
         }
-        authorService.createOrUpdateAuthorList(authors);
+        authorService.createOrUpdateAuthorList(authors).subscribe();
 
         // Если у книги изменились жанры, то изменяем книги у жанров
         List<Genre> genres = book.getGenres();
         for (Genre genre : genres) {
             genre.addBook(book);
         }
-        genreService.createOrUpdateGenreList(genres);
+        genreService.createOrUpdateGenreList(genres).subscribe();
 
-        Book savedBook = bookService.createOrUpdateBook(book);
+        Mono<Book> savedBook = bookService.createOrUpdateBook(book);
 
-        return ResponseEntity.ok(savedBook);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedBook.block());
     }
 
 }

@@ -1,7 +1,8 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
@@ -10,7 +11,6 @@ import ru.nchernetsov.service.CommentService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -24,87 +24,75 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public void addCommentToBookByTitle(String bookTitle, Comment comment) {
-        Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
-        bookOptional.ifPresent(book -> addCommentToBook(comment, book));
+        Mono<Book> bookOptional = bookRepository.findByTitle(bookTitle);
+        bookOptional.subscribe(book -> addCommentToBook(comment, book));
     }
 
     @Override
     public Comment addCommentToBookById(String bookId, Comment comment) {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        bookOptional.ifPresent(book -> addCommentToBook(comment, book));
+        Mono<Book> bookOptional = bookRepository.findById(bookId);
+        bookOptional.subscribe(book -> addCommentToBook(comment, book));
         return comment;
     }
 
     @Override
     public List<Comment> getBookComments(String bookId) {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isPresent()) {
-            Book book = bookOptional.get();
-            return book.getComments();
-        } else {
-            return null;
-        }
+        Mono<Book> bookOptional = bookRepository.findById(bookId);
+
+        List<Comment> bookComments = new ArrayList<>();
+
+        bookOptional.subscribe(book -> bookComments.addAll(book.getComments()));
+        return bookComments;
     }
 
     @Override
-    public Comment createOrUpdateComment(Comment comment) {
+    public Mono<Comment> createOrUpdateComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
     @Override
     public Comment deleteCommentById(String id) {
-        Optional<Comment> commentOptional = commentRepository.findById(id);
-        if (commentOptional.isPresent()) {
-            Comment comment = commentOptional.get();
+        Mono<Comment> commentMono = commentRepository.findById(id);
+        Comment comment = commentMono.block();
+        if (comment != null) {
             String bookId = comment.getBookId();
-            Optional<Book> bookOptional = bookRepository.findById(bookId);
-            if (bookOptional.isPresent()) {
-                Book book = bookOptional.get();
+            Mono<Book> bookOptional = bookRepository.findById(bookId);
+            bookOptional.subscribe(book -> {
                 book.removeComment(comment.getText());
                 commentRepository.delete(comment);
                 bookRepository.save(book);
-            }
-            return comment;
+            });
         }
-        return null;
+        return comment;
     }
 
     @Override
-    public Book getBookByCommentId(String commentId) {
-        Optional<Comment> commentOptional = commentRepository.findById(commentId);
-        if (commentOptional.isPresent()) {
-            Comment comment = commentOptional.get();
-            String bookId = comment.getBookId();
-            Optional<Book> bookOptional = bookRepository.findById(bookId);
-            if (bookOptional.isPresent()) {
-                return bookOptional.get();
-            }
-        }
-        return null;
+    public Mono<Book> getBookByCommentId(String commentId) {
+        Mono<Comment> commentMono = commentRepository.findById(commentId);
+        return commentMono.map(comment -> bookRepository.findById(comment.getBookId())).block();
     }
 
     @Override
     public List<Comment> getCommentsByIds(List<String> ids) {
-        Iterable<Comment> comments = commentRepository.findAllById(ids);
+        Flux<Comment> comments = commentRepository.findAllById(ids);
         List<Comment> commentList = new ArrayList<>();
-        for (Comment comment : comments) {
-            commentList.add(comment);
-        }
+
+        comments.subscribe(commentList::add);
+
         return commentList;
     }
 
     @Override
-    public List<Comment> getAll() {
+    public Flux<Comment> getAll() {
         return commentRepository.findAll();
     }
 
     private void addCommentToBook(Comment comment, Book book) {
         comment.setBookId(book.getId());
-        commentRepository.save(comment);
+        commentRepository.save(comment).subscribe();
         book.addComment(comment);
-        bookRepository.save(book);
+        bookRepository.save(book).subscribe();
     }
 
 }

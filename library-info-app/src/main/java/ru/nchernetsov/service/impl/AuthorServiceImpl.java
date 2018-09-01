@@ -1,6 +1,8 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.repository.AuthorRepository;
@@ -9,7 +11,6 @@ import ru.nchernetsov.service.AuthorService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -24,61 +25,62 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> findAll() {
+    public Flux<Author> findAll() {
         return authorRepository.findAll();
     }
 
     @Override
-    public Author findOne(String id) {
-        Optional<Author> authorOptional = authorRepository.findById(id);
-        return authorOptional.orElse(null);
+    public Mono<Author> findOne(String id) {
+        return authorRepository.findById(id);
     }
 
     @Override
-    public Author createOrUpdateAuthor(Author author) {
+    public Mono<Author> createOrUpdateAuthor(Author author) {
         return authorRepository.save(author);
     }
 
     @Override
-    public List<Author> createOrUpdateAuthorList(List<Author> authors) {
+    public Flux<Author> createOrUpdateAuthorList(List<Author> authors) {
         return authorRepository.saveAll(authors);
     }
 
     @Override
-    public Author deleteAuthorById(String id) {
-        Author author = findOne(id);
+    public Mono<Author> deleteAuthorById(String id) {
+        Mono<Author> authorMono = findOne(id);
 
-        List<String> authorBookIds = author.getBookIds();
-        Iterable<Book> authorBooks = bookRepository.findAllById(authorBookIds);
+        Author author = authorMono.block();
 
-        for (Book book : authorBooks) {
-            book.deleteAuthorByName(author.getName());
+        if (author != null) {
+            List<String> authorBookIds = author.getBookIds();
+            Flux<Book> authorBooks = bookRepository.findAllById(authorBookIds);
+
+            authorBooks.subscribe(book -> book.deleteAuthorByName(author.getName()));
+
+            authorRepository.deleteById(id).subscribe();
         }
 
-        authorRepository.deleteById(id);
-
-        return author;
+        return authorMono;
     }
 
     @Override
     public List<Book> getAuthorBooks(String authorId) {
-        Author author = findOne(authorId);
+        Mono<Author> authorMono = findOne(authorId);
+
+        Author author = authorMono.block();
 
         List<Book> books = new ArrayList<>();
-        if (author != null) {  // если это не создание нового автора
+
+        if (author != null) {
             List<String> authorBookIds = author.getBookIds();
-            Iterable<Book> authorBooks = bookRepository.findAllById(authorBookIds);
-            for (Book book : authorBooks) {
-                books.add(book);
-            }
+            Flux<Book> authorBooks = bookRepository.findAllById(authorBookIds);
+            authorBooks.subscribe(books::add);
         }
 
         return books;
     }
 
     @Override
-    public Author getAuthorByName(String name) {
-        Optional<Author> authorOptional = authorRepository.findByName(name);
-        return authorOptional.orElse(null);
+    public Mono<Author> getAuthorByName(String name) {
+        return authorRepository.findByName(name);
     }
 }
