@@ -10,7 +10,6 @@ import ru.nchernetsov.domain.Author;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.service.AuthorService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,31 +29,30 @@ public class AuthorController {
     }
 
     @PostMapping(value = "/authors")
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Author> createAuthor(@RequestBody Author author) {
         author.setId(UUID.randomUUID().toString());
 
-        List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
-        author.setBookIds(authorBooks);
+        Flux<Book> authorBooks = authorService.getAuthorBooks(author.getId());
+        authorBooks.collectList().subscribe(author::setBookIds);
 
-        Mono<Author> createdAuthor = authorService.createOrUpdateAuthor(author);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthor.block());
+        return authorService.createOrUpdateAuthor(author);
     }
 
     @PutMapping(value = "/authors")
-    public ResponseEntity<Author> updateAuthor(@RequestBody Author author) {
-        List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
-        author.setBookIds(authorBooks);
+    public Mono<ResponseEntity<Author>> updateAuthor(@RequestBody Author author) {
+        Flux<Book> authorBooks = authorService.getAuthorBooks(author.getId());
+        authorBooks.collectList().subscribe(author::setBookIds);
 
-        Mono<Author> updatedAuthor = authorService.createOrUpdateAuthor(author);
-
-        return ResponseEntity.ok(updatedAuthor.block());
+        return authorService.createOrUpdateAuthor(author)
+            .map(updatedAuthor -> new ResponseEntity<>(updatedAuthor, HttpStatus.OK))
+            .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping(value = "/authors/{authorId}")
-    public ResponseEntity<Author> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
-        Mono<Author> author = authorService.deleteAuthorById(authorId);
-        return ResponseEntity.ok(author.block());
+    public Mono<ResponseEntity<Void>> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
+        return authorService.deleteAuthorById(authorId)
+            .then(Mono.just(new ResponseEntity<>(HttpStatus.OK)));
     }
 
 }

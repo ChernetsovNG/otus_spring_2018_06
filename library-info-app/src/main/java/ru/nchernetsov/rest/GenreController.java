@@ -40,7 +40,6 @@ public class GenreController {
     }
 
     @PutMapping(value = "/genres")
-    @ResponseStatus(HttpStatus.OK)
     public Mono<ResponseEntity<Genre>> updateGenre(@RequestBody Genre genre) {
         Flux<Book> genreBooks = genreService.getGenreBooks(genre.getId());
         genreBooks.collectList().subscribe(genre::setBookIds);
@@ -51,7 +50,6 @@ public class GenreController {
     }
 
     @DeleteMapping(value = "/genres/{genreId}")
-    @ResponseStatus(HttpStatus.OK)
     public Mono<ResponseEntity<Void>> deleteGenre(@PathVariable(name = "genreId") String genreId) {
         return genreService.deleteGenreById(genreId)
             .then(Mono.just(new ResponseEntity<>(HttpStatus.OK)));

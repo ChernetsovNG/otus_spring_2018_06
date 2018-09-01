@@ -17,9 +17,9 @@ public interface AuthorService {
 
     Flux<Author> createOrUpdateAuthorList(List<Author> authors);
 
-    Mono<Author> deleteAuthorById(String id);
+    Mono<Void> deleteAuthorById(String id);
 
-    List<Book> getAuthorBooks(String authorId);
+    Flux<Book> getAuthorBooks(String authorId);
 
     Mono<Author> getAuthorByName(String name);
 }

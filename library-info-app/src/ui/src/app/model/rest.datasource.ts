@@ -57,9 +57,9 @@ export class RestDataSource {
             .put<Author>(this.baseUrl + "/authors", author);
     }
 
-    deleteAuthor(id: string): Observable<Author> {
+    deleteAuthor(id: string): Observable<null> {
         return this.http
-            .delete<Author>(this.baseUrl + `/authors/${id}`);
+            .delete<null>(this.baseUrl + `/authors/${id}`);
     }
 
     // Genres
@@ -106,9 +106,9 @@ export class RestDataSource {
             .put<Comment>(this.baseUrl + "/comments", comment);
     }
 
-    deleteComment(id: string): Observable<Comment> {
+    deleteComment(id: string): Observable<null> {
         return this.http
-            .delete<Comment>(this.baseUrl + `/comments/${id}`);
+            .delete<null>(this.baseUrl + `/comments/${id}`);
     }
 
     // Orders

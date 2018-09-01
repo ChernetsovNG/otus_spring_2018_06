@@ -9,7 +9,6 @@ import ru.nchernetsov.repository.AuthorRepository;
 import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.service.AuthorService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,38 +44,22 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Mono<Author> deleteAuthorById(String id) {
+    public Mono<Void> deleteAuthorById(String id) {
         Mono<Author> authorMono = findOne(id);
 
-        Author author = authorMono.block();
-
-        if (author != null) {
-            List<String> authorBookIds = author.getBookIds();
-            Flux<Book> authorBooks = bookRepository.findAllById(authorBookIds);
-
+        authorMono.subscribe(author -> {
+            Flux<Book> authorBooks = bookRepository.findAllById(author.getBookIds());
             authorBooks.subscribe(book -> book.deleteAuthorByName(author.getName()));
+        });
 
-            authorRepository.deleteById(id).subscribe();
-        }
-
-        return authorMono;
+        return authorRepository.deleteById(id);
     }
 
     @Override
-    public List<Book> getAuthorBooks(String authorId) {
+    public Flux<Book> getAuthorBooks(String authorId) {
         Mono<Author> authorMono = findOne(authorId);
-
-        Author author = authorMono.block();
-
-        List<Book> books = new ArrayList<>();
-
-        if (author != null) {
-            List<String> authorBookIds = author.getBookIds();
-            Flux<Book> authorBooks = bookRepository.findAllById(authorBookIds);
-            authorBooks.subscribe(books::add);
-        }
-
-        return books;
+        return authorMono.map(author -> bookRepository.findAllById(author.getBookIds()))
+            .flatMapMany(Flux::next);
     }
 
     @Override

@@ -93,7 +93,7 @@ export class DataRepository {
 
     deleteAuthor(id: string) {
         this.dataSource.deleteAuthor(id)
-            .subscribe(a => {
+            .subscribe(() => {
                 this.authors.splice(this.authors.findIndex(a => a.id == id), 1);
                 this.updateBooksList();
             });
@@ -161,7 +161,7 @@ export class DataRepository {
 
     deleteComment(id: string) {
         this.dataSource.deleteComment(id)
-            .subscribe(c => {
+            .subscribe(() => {
                 this.comments.splice(this.comments.findIndex(c => c.id == id), 1);
             });
     }
