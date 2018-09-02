@@ -32,10 +32,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book deleteBookById(String id) {
-        Mono<Book> bookMono = bookRepository.findById(id);
-        bookMono.subscribe(book -> bookRepository.deleteById(book.getId()));
-        return bookMono.block();
+    public Mono<Void> deleteBookById(String id) {
+        return bookRepository.deleteById(id);
     }
 
 }

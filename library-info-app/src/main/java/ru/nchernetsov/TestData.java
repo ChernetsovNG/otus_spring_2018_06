@@ -9,10 +9,10 @@ import java.util.*;
 
 public class TestData {
 
-    private static final Map<Integer, Author> authorsMap = new HashMap<>();
-    private static final Map<Integer, Book> booksMap = new HashMap<>();
-    private static final Map<Integer, Comment> commentsMap = new HashMap<>();
-    private static final Map<Integer, Genre> genresMap = new HashMap<>();
+    private static final Map<Integer, Author> authorsMap = new TreeMap<>();
+    private static final Map<Integer, Book> booksMap = new TreeMap<>();
+    private static final Map<Integer, Comment> commentsMap = new TreeMap<>();
+    private static final Map<Integer, Genre> genresMap = new TreeMap<>();
 
     public Map<Integer, Author> getAuthorsMap() {
         return authorsMap;

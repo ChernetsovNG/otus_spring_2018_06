@@ -24,16 +24,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void addCommentToBookByTitle(String bookTitle, Comment comment) {
-        Mono<Book> bookOptional = bookRepository.findByTitle(bookTitle);
-        bookOptional.subscribe(book -> addCommentToBook(comment, book));
+    public Mono<Comment> addCommentToBookByTitle(String bookTitle, Comment comment) {
+        Mono<Book> bookMono = bookRepository.findByTitle(bookTitle);
+        return bookMono.map(book -> addCommentToBook(comment, book)).flatMap(Mono::single);
     }
 
     @Override
-    public Comment addCommentToBookById(String bookId, Comment comment) {
-        Mono<Book> bookOptional = bookRepository.findById(bookId);
-        bookOptional.subscribe(book -> addCommentToBook(comment, book));
-        return comment;
+    public Mono<Comment> addCommentToBookById(String bookId, Comment comment) {
+        Mono<Book> bookMono = bookRepository.findById(bookId);
+        return bookMono.map(book -> addCommentToBook(comment, book)).flatMap(Mono::single);
     }
 
     @Override
@@ -52,19 +51,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment deleteCommentById(String id) {
+    public Mono<Void> deleteCommentById(String id) {
         Mono<Comment> commentMono = commentRepository.findById(id);
-        Comment comment = commentMono.block();
-        if (comment != null) {
+        return commentMono.map(comment -> {
             String bookId = comment.getBookId();
-            Mono<Book> bookOptional = bookRepository.findById(bookId);
-            bookOptional.subscribe(book -> {
+            Mono<Book> bookMono = bookRepository.findById(bookId);
+            bookMono.subscribe(book -> {
                 book.removeComment(comment.getText());
-                commentRepository.delete(comment);
-                bookRepository.save(book);
+                bookRepository.save(book).subscribe();
             });
-        }
-        return comment;
+            return commentRepository.delete(comment);
+        }).flatMap(Mono::single);
     }
 
     @Override
@@ -88,11 +85,11 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAll();
     }
 
-    private void addCommentToBook(Comment comment, Book book) {
+    private Mono<Comment> addCommentToBook(Comment comment, Book book) {
         comment.setBookId(book.getId());
-        commentRepository.save(comment).subscribe();
         book.addComment(comment);
         bookRepository.save(book).subscribe();
+        return commentRepository.save(comment);
     }
 
 }

@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface CommentService {
 
-    void addCommentToBookByTitle(String bookTitle, Comment comment);
+    Mono<Comment> addCommentToBookByTitle(String bookTitle, Comment comment);
 
-    Comment addCommentToBookById(String bookId, Comment comment);
+    Mono<Comment> addCommentToBookById(String bookId, Comment comment);
 
     List<Comment> getBookComments(String bookId);
 
     Mono<Comment> createOrUpdateComment(Comment comment);
 
-    Comment deleteCommentById(String id);
+    Mono<Void> deleteCommentById(String id);
 
     Mono<Book> getBookByCommentId(String commentId);
 

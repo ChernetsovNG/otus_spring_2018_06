@@ -10,8 +10,6 @@ import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.service.BookService;
 import ru.nchernetsov.service.CommentService;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,32 +31,28 @@ public class CommentController {
     }
 
     @GetMapping(value = "/comments/books/{bookId}")
-    public List<Comment> bookCommentsList(@PathVariable(value = "bookId") String bookId) {
+    public Flux<Comment> bookCommentsList(@PathVariable(value = "bookId") String bookId) {
         Mono<Book> bookMono = bookService.findOne(bookId);
-        Book book = bookMono.block();
-        if (book != null) {
-            return book.getComments();
-        } else {
-            return Collections.emptyList();
-        }
+        return bookMono.map(Book::getComments).flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping(value = "/comments")
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Comment> createComment(@RequestBody Comment comment) {
         comment.setId(UUID.randomUUID().toString());
-        Comment createdComment = commentService.addCommentToBookById(comment.getBookId(), comment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
+        return commentService.addCommentToBookById(comment.getBookId(), comment);
     }
 
     @PutMapping(value = "/comments")
-    public ResponseEntity<Comment> updateComment(@RequestBody Comment comment) {
-        Comment updatedComment = commentService.addCommentToBookById(comment.getBookId(), comment);
-        return ResponseEntity.ok(updatedComment);
+    public Mono<ResponseEntity<Comment>> updateComment(@RequestBody Comment comment) {
+        return commentService.addCommentToBookById(comment.getBookId(), comment)
+            .map(updatedComment -> new ResponseEntity<>(updatedComment, HttpStatus.OK))
+            .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping(value = "/comments/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable(name = "commentId") String commentId) {
-        Comment comment = commentService.deleteCommentById(commentId);
-        return ResponseEntity.ok(comment);
+    public Mono<ResponseEntity<Void>> deleteComment(@PathVariable(name = "commentId") String commentId) {
+        return commentService.deleteCommentById(commentId)
+            .then(Mono.just(new ResponseEntity<>(HttpStatus.OK)));
     }
 }

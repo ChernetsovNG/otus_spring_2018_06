@@ -41,22 +41,25 @@ public class BookController {
     }
 
     @PostMapping(value = "/books")
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Book> createBook(@RequestBody Book book) {
         return createOrUpdateBook(book);
     }
 
     @PutMapping(value = "/books")
-    public ResponseEntity<Book> updateBook(@RequestBody Book book) {
-        return createOrUpdateBook(book);
+    public Mono<ResponseEntity<Book>> updateBook(@RequestBody Book book) {
+        return createOrUpdateBook(book)
+            .map(updatedBook -> new ResponseEntity<>(updatedBook, HttpStatus.OK))
+            .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping(value = "/books/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable(name = "id") String id) {
-        Book book = bookService.deleteBookById(id);
-        return ResponseEntity.ok(book);
+    public Mono<ResponseEntity<Void>> deleteBook(@PathVariable(name = "id") String id) {
+        return bookService.deleteBookById(id)
+            .then(Mono.just(new ResponseEntity<>(HttpStatus.OK)));
     }
 
-    private ResponseEntity<Book> createOrUpdateBook(@RequestBody Book book) {
+    private Mono<Book> createOrUpdateBook(@RequestBody Book book) {
         // Если у книги изменились авторы, то изменяем книги у авторов
         List<Author> authors = book.getAuthors();
         for (Author author : authors) {
@@ -71,9 +74,7 @@ public class BookController {
         }
         genreService.createOrUpdateGenreList(genres).subscribe();
 
-        Mono<Book> savedBook = bookService.createOrUpdateBook(book);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBook.block());
+        return bookService.createOrUpdateBook(book);
     }
 
 }
