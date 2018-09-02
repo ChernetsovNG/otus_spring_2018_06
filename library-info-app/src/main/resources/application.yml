@@ -1,8 +1,15 @@
 server:
-  port: 8080
+  port: 3500
 
 management:
   endpoints:
     web:
       exposure:
         include: threaddump, env, configprops
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: spring-boot-app-db

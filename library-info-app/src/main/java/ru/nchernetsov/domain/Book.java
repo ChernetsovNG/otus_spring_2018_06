@@ -1,11 +1,14 @@
 package ru.nchernetsov.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Document(collection = "books")
 public class Book {
@@ -13,22 +16,29 @@ public class Book {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String title;
 
+    @DBRef
     private List<Author> authors = new ArrayList<>();
 
+    @DBRef
     private List<Genre> genres = new ArrayList<>();
 
+    @DBRef
     private List<Comment> comments = new ArrayList<>();
 
     public Book() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public Book(String title) {
+        this();
         this.title = title;
     }
 
     public Book(String title, List<Author> authors, List<Genre> genres) {
+        this();
         this.title = title;
         this.authors = authors;
         this.genres = genres;
@@ -81,4 +91,39 @@ public class Book {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public void removeComment(String commentText) {
+        for (Comment comment : comments) {
+            if (comment.getText().equals(commentText)) {
+                comments.remove(comment);
+                break;
+            }
+        }
+    }
+
+    public void deleteAuthorByName(String name) {
+        for (Author author : authors) {
+            if (author.getName().equals(name)) {
+                authors.remove(author);
+                break;
+            }
+        }
+    }
+
+    public void deleteGenreByName(String name) {
+        for (Genre genre : genres) {
+            if (genre.getName().equals(name)) {
+                genres.remove(genre);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+            "title='" + title + '\'' +
+            '}';
+    }
+
 }

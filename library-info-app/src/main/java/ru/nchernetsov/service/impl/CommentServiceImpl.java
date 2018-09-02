@@ -1,14 +1,16 @@
 package ru.nchernetsov.service.impl;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.domain.Comment;
 import ru.nchernetsov.repository.BookRepository;
 import ru.nchernetsov.repository.CommentRepository;
 import ru.nchernetsov.service.CommentService;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -22,23 +24,71 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
-    public void addCommentToBook(String bookTitle, String commentText) {
-        Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
+    public Mono<Comment> addCommentToBookByTitle(String bookTitle, Comment comment) {
+        Mono<Book> bookMono = bookRepository.findByTitle(bookTitle);
+        return bookMono.map(book -> addCommentToBook(comment, book)).flatMap(Mono::single);
+    }
 
-        if (bookOptional.isPresent()) {
-            Book book = bookOptional.get();
+    @Override
+    public Mono<Comment> addCommentToBookById(String bookId, Comment comment) {
+        Mono<Book> bookMono = bookRepository.findById(bookId);
+        return bookMono.map(book -> addCommentToBook(comment, book)).flatMap(Mono::single);
+    }
 
-            Comment comment = new Comment(commentText);
+    @Override
+    public List<Comment> getBookComments(String bookId) {
+        Mono<Book> bookOptional = bookRepository.findById(bookId);
 
-            comment.setBook(book);
+        List<Comment> bookComments = new ArrayList<>();
 
-            commentRepository.save(comment);
+        bookOptional.subscribe(book -> bookComments.addAll(book.getComments()));
+        return bookComments;
+    }
 
-            book.addComment(comment);
+    @Override
+    public Mono<Comment> createOrUpdateComment(Comment comment) {
+        return commentRepository.save(comment);
+    }
 
-            bookRepository.save(book);
-        }
+    @Override
+    public Mono<Void> deleteCommentById(String id) {
+        Mono<Comment> commentMono = commentRepository.findById(id);
+        commentMono.subscribe(comment -> {
+            String bookId = comment.getBookId();
+            bookRepository.findById(bookId).subscribe(book -> {
+                book.removeComment(comment.getText());
+                bookRepository.save(book).subscribe();
+            });
+        });
+        return commentMono.map(commentRepository::delete).then();
+    }
+
+    @Override
+    public Mono<Book> getBookByCommentId(String commentId) {
+        Mono<Comment> commentMono = commentRepository.findById(commentId);
+        return commentMono.map(comment -> bookRepository.findById(comment.getBookId())).block();
+    }
+
+    @Override
+    public List<Comment> getCommentsByIds(List<String> ids) {
+        Flux<Comment> comments = commentRepository.findAllById(ids);
+        List<Comment> commentList = new ArrayList<>();
+
+        comments.subscribe(commentList::add);
+
+        return commentList;
+    }
+
+    @Override
+    public Flux<Comment> getAll() {
+        return commentRepository.findAll();
+    }
+
+    private Mono<Comment> addCommentToBook(Comment comment, Book book) {
+        comment.setBookId(book.getId());
+        book.addComment(comment);
+        bookRepository.save(book).subscribe();
+        return commentRepository.save(comment);
     }
 
 }

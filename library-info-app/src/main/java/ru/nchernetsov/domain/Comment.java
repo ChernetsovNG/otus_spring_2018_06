@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Document(collection = "comments")
 public class Comment {
@@ -11,23 +12,27 @@ public class Comment {
     @Id
     private String id;
 
-    private String comment;
+    private String text;
 
     private LocalDateTime timestamp;
 
     private String bookId;
 
     public Comment() {
-    }
-
-    public Comment(String comment) {
-        this.comment = comment;
+        this.id = UUID.randomUUID().toString();
         this.timestamp = LocalDateTime.now();
     }
 
-    public Comment(String id, String comment) {
+    public Comment(String text) {
+        this();
+        this.text = text;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Comment(String id, String text) {
+        this();
         this.id = id;
-        this.comment = comment;
+        this.text = text;
         this.timestamp = LocalDateTime.now();
     }
 
@@ -39,12 +44,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getComment() {
-        return comment;
+    public String getText() {
+        return text;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public LocalDateTime getTimestamp() {
@@ -55,11 +60,18 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public String getBook() {
+    public String getBookId() {
         return bookId;
     }
 
-    public void setBook(Book book) {
-        this.bookId = book.getId();
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "text='" + text + '\'' +
+                '}';
     }
 }

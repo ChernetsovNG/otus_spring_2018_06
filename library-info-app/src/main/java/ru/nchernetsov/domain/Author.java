@@ -1,11 +1,13 @@
 package ru.nchernetsov.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Document(collection = "authors")
@@ -14,18 +16,22 @@ public class Author {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String name;
 
     private List<String> bookIds = new ArrayList<>();
 
     public Author() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public Author(String name) {
+        this();
         this.name = name;
     }
 
     public Author(String id, String name) {
+        this();
         this.id = id;
         this.name = name;
     }
@@ -60,5 +66,10 @@ public class Author {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "Author{" +
+            "name='" + name + '\'' +
+            '}';
+    }
 }

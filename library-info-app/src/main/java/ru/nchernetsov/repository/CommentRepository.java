@@ -1,7 +1,9 @@
 package ru.nchernetsov.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.stereotype.Repository;
 import ru.nchernetsov.domain.Comment;
 
-public interface CommentRepository extends MongoRepository<Comment, String> {
+@Repository
+public interface CommentRepository extends ReactiveMongoRepository<Comment, String> {
 }
