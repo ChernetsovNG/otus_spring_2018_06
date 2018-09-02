@@ -53,15 +53,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Mono<Void> deleteCommentById(String id) {
         Mono<Comment> commentMono = commentRepository.findById(id);
-        return commentMono.map(comment -> {
+        commentMono.subscribe(comment -> {
             String bookId = comment.getBookId();
-            Mono<Book> bookMono = bookRepository.findById(bookId);
-            bookMono.subscribe(book -> {
+            bookRepository.findById(bookId).subscribe(book -> {
                 book.removeComment(comment.getText());
                 bookRepository.save(book).subscribe();
             });
-            return commentRepository.delete(comment);
-        }).flatMap(Mono::single);
+        });
+        return commentMono.map(commentRepository::delete).then();
     }
 
     @Override
