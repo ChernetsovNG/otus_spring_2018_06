@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Comments</title>
+
+    <link rel="stylesheet" type="text/css" media="all" href="../static/css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#" th:href="@{/books}">Books</a></li>
+            <li><a href="#" th:href="@{/authors}">Authors</a></li>
+            <li><a href="#" th:href="@{/genres}">Genres</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+
+    <h1>Book: <span th:text="${bookTitle}">Test</span></h1>
+    <h2>Comments</h2>
+
+    <p>
+        <a href="/comments/add/1" th:href="@{/comments/add/__${bookId}__}">Add comment</a>
+    </p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Timestamp</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}">Id</td>
+            <td th:text="${comment.timestamp}">Timestamp</td>
+            <td th:text="${comment.comment}">Comment Text</td>
+            <td>
+                <a href="/comments/delete/1" th:href="@{/comments/delete/__${comment.id}__}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

@@ -5,10 +5,14 @@ plugins {
 version = '0.1-SNAPSHOT'
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile('org.springframework.boot:spring-boot-starter-undertow')
+
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-    compile('org.springframework.shell:spring-shell-starter:2.0.1.RELEASE')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
