@@ -25,15 +25,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-            .anyRequest().authenticated()
+            .antMatchers("/css/**", "/js/**", "/fonts/**").permitAll()
+            .anyRequest().access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
             .and()
             .formLogin()
             .loginPage("/login")
+            .loginProcessingUrl("/appLogin")
             .defaultSuccessUrl("/books", true)
             .permitAll()
             .and()
             .logout()
-            .permitAll();
+            .logoutUrl("/appLogout")
+            .logoutSuccessUrl("/login");
     }
 
     @Bean

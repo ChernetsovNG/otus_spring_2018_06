@@ -13,19 +13,19 @@
 
 <body>
 
-<h1>Login page</h1>
+<h2>Login page</h2>
 
-<form th:action="@{/login}" method="POST">
+<form class="form-group" th:action="@{/appLogin}" method="POST">
 
     <div th:if="${param.error}">
         <div class="alert alert-danger">
-            Invalid username and password.
+            Bad credentials
         </div>
     </div>
 
     <div th:if="${param.logout}">
         <div class="alert alert-info">
-            You have been logged out.
+            You have been logged out
         </div>
     </div>
 
@@ -35,7 +35,7 @@
     <label for="password">Password</label>:
     <input type="password" id="password" name="password"/><br/>
 
-    <input type="submit" value="Log in"/>
+    <button type="submit" class="btn btn-primary">Login</button>
 </form>
 
 </body>
