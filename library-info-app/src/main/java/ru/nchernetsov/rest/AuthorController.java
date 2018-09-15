@@ -1,6 +1,7 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Author;
@@ -35,7 +36,7 @@ public class AuthorController {
 
         Author createdAuthor = authorService.createOrUpdateAuthor(author);
 
-        return ResponseEntity.ok(createdAuthor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthor);
     }
 
     @PutMapping(value = "/authors")

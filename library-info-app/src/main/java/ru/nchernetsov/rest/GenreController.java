@@ -1,6 +1,7 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Book;
@@ -35,7 +36,7 @@ public class GenreController {
 
         Genre createdGenre = genreService.createOrUpdateGenre(genre);
 
-        return ResponseEntity.ok(createdGenre);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGenre);
     }
 
     @PutMapping(value = "/genres")

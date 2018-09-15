@@ -1,5 +1,6 @@
 package ru.nchernetsov.rest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Book;
@@ -38,7 +39,7 @@ public class CommentController {
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         comment.setId(UUID.randomUUID().toString());
         Comment createdComment = commentService.addCommentToBookById(comment.getBookId(), comment);
-        return ResponseEntity.ok(createdComment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }
 
     @PutMapping(value = "/comments")

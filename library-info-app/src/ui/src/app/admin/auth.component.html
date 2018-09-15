@@ -8,12 +8,12 @@
 <div class="p-3">
     <form novalidate #form="ngForm" (ngSubmit)="authenticate(form)">
         <div class="form-group">
-            <label>Name</label>
-            <input class="form-control" name="username" [(ngModel)]="username" required/>
+            <label for="username">Name</label>
+            <input class="form-control" id="username" name="username" [(ngModel)]="username" required/>
         </div>
         <div class="form-group">
-            <label>Password</label>
-            <input class="form-control" type="password" name="password" [(ngModel)]="password" required/>
+            <label for="password">Password</label>
+            <input class="form-control" type="password" id="password" name="password" [(ngModel)]="password" required/>
         </div>
         <div class="text-xl-center">
             <button class="btn btn-secondary" routerLink="/">Go Back</button>
