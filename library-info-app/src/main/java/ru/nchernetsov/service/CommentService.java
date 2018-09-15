@@ -9,15 +9,17 @@ public interface CommentService {
 
     void addCommentToBookByTitle(String bookTitle, Comment comment);
 
-    void addCommentToBookById(String bookId, Comment comment);
+    Comment addCommentToBookById(String bookId, Comment comment);
 
     List<Comment> getBookComments(String bookId);
 
     Comment createOrUpdateComment(Comment comment);
 
-    void deleteCommentById(String id);
+    Comment deleteCommentById(String id);
 
     Book getBookByCommentId(String commentId);
 
     List<Comment> getCommentsByIds(List<String> ids);
+
+    List<Comment> getAll();
 }

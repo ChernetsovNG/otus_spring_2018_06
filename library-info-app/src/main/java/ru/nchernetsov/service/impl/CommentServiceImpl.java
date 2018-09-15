@@ -27,14 +27,14 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void addCommentToBookByTitle(String bookTitle, Comment comment) {
         Optional<Book> bookOptional = bookRepository.findByTitle(bookTitle);
-
         bookOptional.ifPresent(book -> addCommentToBook(comment, book));
     }
 
     @Override
-    public void addCommentToBookById(String bookId, Comment comment) {
+    public Comment addCommentToBookById(String bookId, Comment comment) {
         Optional<Book> bookOptional = bookRepository.findById(bookId);
         bookOptional.ifPresent(book -> addCommentToBook(comment, book));
+        return comment;
     }
 
     @Override
@@ -54,19 +54,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteCommentById(String id) {
+    public Comment deleteCommentById(String id) {
         Optional<Comment> commentOptional = commentRepository.findById(id);
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
-            String bookId = comment.getBook();
+            String bookId = comment.getBookId();
             Optional<Book> bookOptional = bookRepository.findById(bookId);
             if (bookOptional.isPresent()) {
                 Book book = bookOptional.get();
-                book.removeComment(comment.getComment());
+                book.removeComment(comment.getText());
                 commentRepository.delete(comment);
                 bookRepository.save(book);
             }
+            return comment;
         }
+        return null;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
-            String bookId = comment.getBook();
+            String bookId = comment.getBookId();
             Optional<Book> bookOptional = bookRepository.findById(bookId);
             if (bookOptional.isPresent()) {
                 return bookOptional.get();
@@ -93,8 +95,13 @@ public class CommentServiceImpl implements CommentService {
         return commentList;
     }
 
+    @Override
+    public List<Comment> getAll() {
+        return commentRepository.findAll();
+    }
+
     private void addCommentToBook(Comment comment, Book book) {
-        comment.setBook(book);
+        comment.setBookId(book.getId());
         commentRepository.save(comment);
         book.addComment(comment);
         bookRepository.save(book);

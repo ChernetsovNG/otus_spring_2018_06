@@ -1,20 +1,18 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.nchernetsov.domain.Author;
-import ru.nchernetsov.domain.AuthorWithBooks;
 import ru.nchernetsov.domain.Book;
 import ru.nchernetsov.service.AuthorService;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
-@Controller
+@RestController
+@CrossOrigin
 public class AuthorController {
 
     private final AuthorService authorService;
@@ -25,44 +23,36 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public String getAuthors(Model model) {
-        List<Author> authors = authorService.findAll();
-
-        List<AuthorWithBooks> authorsWithBooks = authors.stream()
-            .map(author -> new AuthorWithBooks(author, authorService.getAuthorBooks(author.getId())))
-            .collect(Collectors.toList());
-
-        model.addAttribute("authors", authors);
-
-        return "authors";
+    public List<Author> getAuthors() {
+        return authorService.findAll();
     }
 
-    @GetMapping(value = {"/authors/edit", "/authors/edit/{authorId}"})
-    public String createOrEditAuthorForm(Model model, @PathVariable(required = false, name = "authorId") String authorId) {
-        if (authorId != null) {
-            model.addAttribute("author", authorService.findOne(authorId));
-        } else {
-            model.addAttribute("author", new Author());
-        }
-        return "editAuthor";
-    }
+    @PostMapping(value = "/authors")
+    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+        author.setId(UUID.randomUUID().toString());
 
-    @PostMapping(value = "/authors/edit")
-    public String editAuthor(Model model, Author author) {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
 
-        authorService.createOrUpdateAuthor(author);
-        model.addAttribute("authors", authorService.findAll());
+        Author createdAuthor = authorService.createOrUpdateAuthor(author);
 
-        return "redirect:/authors";
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthor);
     }
 
-    @GetMapping(value = "/authors/delete/{authorId}")
-    public String deleteAuthor(Model model, @PathVariable(name = "authorId") String authorId) {
-        authorService.deleteAuthorById(authorId);
-        model.addAttribute("authors", authorService.findAll());
-        return "redirect:/authors";
+    @PutMapping(value = "/authors")
+    public ResponseEntity<Author> updateAuthor(@RequestBody Author author) {
+        List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
+        author.setBookIds(authorBooks);
+
+        Author updatedAuthor = authorService.createOrUpdateAuthor(author);
+
+        return ResponseEntity.ok(updatedAuthor);
+    }
+
+    @DeleteMapping(value = "/authors/{authorId}")
+    public ResponseEntity<Author> deleteAuthor(@PathVariable(name = "authorId") String authorId) {
+        Author author = authorService.deleteAuthorById(authorId);
+        return ResponseEntity.ok(author);
     }
 
 }

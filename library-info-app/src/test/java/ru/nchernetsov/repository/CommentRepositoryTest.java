@@ -48,7 +48,7 @@ public class CommentRepositoryTest extends MongoDBTest {
         assertThat(comments).hasSize(4);
 
         Set<String> commentBooks = comments.stream()
-                .map(Comment::getBook)
+                .map(Comment::getBookId)
                 .filter(Objects::nonNull)
                 .map(bookId -> bookRepository.findById(bookId))
                 .map(Optional::get)
