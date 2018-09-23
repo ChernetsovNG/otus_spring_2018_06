@@ -1,5 +1,6 @@
 package ru.nchernetsov.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/comments/books/{bookId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String bookCommentsList(Model model, @PathVariable(value = "bookId") String bookId) {
         Book book = bookService.findOne(bookId);
 
@@ -34,6 +36,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/comments/add/{bookId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String addCommentForm(Model model, @PathVariable(required = false, name = "bookId") String bookId) {
         model.addAttribute("comment", new Comment());
         model.addAttribute("bookId", bookId);
@@ -42,16 +45,18 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comments/add")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String addComment(Model model, String bookId, Comment comment) {
         commentService.addCommentToBookById(bookId, comment);
 
         model.addAttribute("bookTitle", bookService.findOne(bookId).getTitle());
         model.addAttribute("comments", commentService.getBookComments(bookId));
 
-        return "redirect:/comments";
+        return "redirect:/comments/books/" + bookId;
     }
 
     @GetMapping(value = "/comments/delete/{commentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteComment(Model model, @PathVariable(name = "commentId") String commentId) {
         Book book = commentService.getBookByCommentId(commentId);
 
@@ -60,6 +65,6 @@ public class CommentController {
         model.addAttribute("bookTitle", book.getTitle());
         model.addAttribute("comments", commentService.getBookComments(book.getId()));
 
-        return "redirect:/comments";
+        return "redirect:/comments/books/" + book.getId();
     }
 }

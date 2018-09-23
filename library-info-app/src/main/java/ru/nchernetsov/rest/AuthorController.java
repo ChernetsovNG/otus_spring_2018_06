@@ -1,6 +1,7 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String getAuthors(Model model) {
         List<Author> authors = authorService.findAll();
 
@@ -38,6 +40,7 @@ public class AuthorController {
     }
 
     @GetMapping(value = {"/authors/edit", "/authors/edit/{authorId}"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String createOrEditAuthorForm(Model model, @PathVariable(required = false, name = "authorId") String authorId) {
         if (authorId != null) {
             model.addAttribute("author", authorService.findOne(authorId));
@@ -48,6 +51,7 @@ public class AuthorController {
     }
 
     @PostMapping(value = "/authors/edit")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editAuthor(Model model, Author author) {
         List<Book> authorBooks = authorService.getAuthorBooks(author.getId());
         author.setBookIds(authorBooks);
@@ -59,6 +63,7 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/authors/delete/{authorId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteAuthor(Model model, @PathVariable(name = "authorId") String authorId) {
         authorService.deleteAuthorById(authorId);
         model.addAttribute("authors", authorService.findAll());

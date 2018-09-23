@@ -1,5 +1,6 @@
 package ru.nchernetsov.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,12 +37,14 @@ public class BookController {
     }
 
     @GetMapping(value = {"/", "/books"})
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String booksList(Model model) {
         model.addAttribute("books", bookService.findAll());
         return "books";
     }
 
     @GetMapping(value = {"/books/edit", "/books/edit/{id}"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String createOrEditBookForm(Model model, @PathVariable(required = false, name = "id") String id) {
         if (id != null) {
             model.addAttribute("book", bookService.findOne(id));
@@ -56,6 +59,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/books/edit")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editBook(Model model, Book book) {
 
         // Если у книги изменились авторы, то изменяем книги у авторов
@@ -83,6 +87,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/books/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteBook(Model model, @PathVariable(name = "id") String id) {
         bookService.deleteBookById(id);
         model.addAttribute("books", bookService.findAll());

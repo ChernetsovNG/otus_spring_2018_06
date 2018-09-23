@@ -1,6 +1,7 @@
 package ru.nchernetsov.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class GenreController {
     }
 
     @GetMapping("/genres")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String getGenres(Model model) {
         List<Genre> genres = genreService.findAll();
         model.addAttribute("genres", genres);
@@ -30,6 +32,7 @@ public class GenreController {
     }
 
     @GetMapping(value = {"/genres/edit", "/genres/edit/{genreId}"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String createOrEditGenreForm(Model model, @PathVariable(required = false, name = "genreId") String genreId) {
         if (genreId != null) {
             model.addAttribute("genre", genreService.findOne(genreId));
@@ -40,6 +43,7 @@ public class GenreController {
     }
 
     @PostMapping(value = "/genres/edit")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editGenre(Model model, Genre genre) {
         List<Book> genreBooks = genreService.getGenreBooks(genre.getId());
         genre.setBookIds(genreBooks);
@@ -51,6 +55,7 @@ public class GenreController {
     }
 
     @GetMapping(value = "/genres/delete/{genreId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteGenre(Model model, @PathVariable(name = "genreId") String genreId) {
         genreService.deleteGenreById(genreId);
         model.addAttribute("genres", genreService.findAll());

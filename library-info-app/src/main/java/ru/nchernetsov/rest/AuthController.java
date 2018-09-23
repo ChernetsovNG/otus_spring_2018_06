@@ -1,5 +1,6 @@
 package ru.nchernetsov.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
 
     @RequestMapping(value = "/userDetails")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public String userDetails(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("user", user);
