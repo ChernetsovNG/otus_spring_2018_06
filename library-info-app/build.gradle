@@ -19,6 +19,7 @@ dependencies {
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.security:spring-security-test')
     testCompile('de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.1.1')
 
     // bootstrap, jQuery

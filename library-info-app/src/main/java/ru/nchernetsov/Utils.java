@@ -16,6 +16,10 @@ public final class Utils {
         return books.stream().map(Book::getTitle).collect(Collectors.toList());
     }
 
+    public static List<String> getBookIds(List<Book> books) {
+        return books.stream().map(Book::getId).collect(Collectors.toList());
+    }
+
     public static List<String> getGenreNames(List<Genre> genres) {
         return genres.stream().map(Genre::getName).collect(Collectors.toList());
     }
