@@ -1,6 +1,5 @@
 package ru.nchernetsov.rest;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import ru.nchernetsov.service.CommentService;
 import ru.nchernetsov.service.GenreService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,11 +50,6 @@ public class BookControllerTest {
 
     private TestData testData = new TestData();
 
-    @Before
-    public void beforeEachTest() {
-        given(bookService.findAll()).willReturn(new ArrayList<>(testData.getBooksMap().values()));
-    }
-
     @Test
     @WithMockUser(roles = {"USER", "ADMIN"})
     public void booksListUserTest() throws Exception {
@@ -64,6 +57,8 @@ public class BookControllerTest {
         List<String> bookTitles = getBookTitles(books);
 
         assertThat(bookTitles).hasSize(6);
+
+        given(bookService.findAll()).willReturn(books);
 
         this.mockMvc.perform(get("/books"))
             .andExpect(status().isOk())
@@ -95,6 +90,11 @@ public class BookControllerTest {
         List<String> bookIds = getBookIds(books);
 
         assertThat(bookIds).hasSize(6);
+
+        books.remove(books.get(0));
+        List<Book> booksAfterDelete = new ArrayList<>(books);
+
+        given(bookService.findAll()).willReturn(booksAfterDelete);
 
         this.mockMvc.perform(get("/books/delete/" + bookIds.get(0)))
             .andExpect(status().isFound())
