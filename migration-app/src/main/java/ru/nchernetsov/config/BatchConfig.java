@@ -8,7 +8,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -19,21 +18,38 @@ import javax.persistence.EntityManagerFactory;
 @EnableBatchProcessing
 public class BatchConfig {
 
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
 
-    @Autowired
-    public EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
-    @Autowired
-    public MongoOperations mongoOperations;
+    private final MongoOperations mongoOperations;
+
+    public BatchConfig(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobBuilderFactory,
+                       EntityManagerFactory entityManagerFactory, MongoOperations mongoOperations) {
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.entityManagerFactory = entityManagerFactory;
+        this.mongoOperations = mongoOperations;
+    }
+
+    // Работа по миграции
+
+    @Bean
+    public Job sqlToMongoMigrationJob() {
+        return jobBuilderFactory.get("sqlToMongoMigrationJob")
+            .start(sqlToMongoMigrationAuthorsStep())
+            .build();
+    }
+
+    // Шаги миграции:
+
+    // 1. Авторы
 
     @Bean
     public Step sqlToMongoMigrationAuthorsStep() {
-        return stepBuilderFactory.get("sqlToMongoMigrationStep")
+        return stepBuilderFactory.get("sqlToMongoMigrationAuthorsStep")
             .<ru.nchernetsov.domain.sql.Author, ru.nchernetsov.domain.mongodb.Author>chunk(5)
             .reader(sqlAuthorReader())
             .processor(sqlToMongoAuthorProcessor())
@@ -66,11 +82,10 @@ public class BatchConfig {
         return mongoItemWriter;
     }
 
-    @Bean
-    public Job sqlToMongoMigrationJob() {
-        return jobBuilderFactory.get("sqlToMongoMigrationJob")
-            .start(sqlToMongoMigrationAuthorsStep())
-            .build();
-    }
+    // 2. Жанры
+
+    // 3. Книги
+
+    // 4. Комментарии
 
 }
