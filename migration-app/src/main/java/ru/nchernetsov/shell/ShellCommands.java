@@ -53,4 +53,11 @@ public class ShellCommands {
         jobLauncher.run(sqlToMongoMigrationJob, new JobParameters());
     }
 
+    @ShellMethod("Clear all data from MongoDB")
+    public void migrationClear() {
+        sqlAuthorRepository.deleteAll();
+
+        mongoDBAuthorRepository.deleteAll();
+    }
+
 }

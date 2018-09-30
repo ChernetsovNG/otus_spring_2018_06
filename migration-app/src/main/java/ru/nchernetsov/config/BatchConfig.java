@@ -39,7 +39,8 @@ public class BatchConfig {
     @Bean
     public Job sqlToMongoMigrationJob() {
         return jobBuilderFactory.get("sqlToMongoMigrationJob")
-            .start(sqlToMongoMigrationAuthorsStep())
+            .start(sqlToMongoMigrationBooksStep())
+  //          .next(sqlToMongoMigrationAuthorsStep())
             .build();
     }
 
@@ -85,6 +86,42 @@ public class BatchConfig {
     // 2. Жанры
 
     // 3. Книги
+
+    @Bean
+    public Step sqlToMongoMigrationBooksStep() {
+        return stepBuilderFactory.get("sqlToMongoMigrationBooksStep")
+            .<ru.nchernetsov.domain.sql.Book, ru.nchernetsov.domain.mongodb.Book>chunk(5)
+            .reader(sqlBookReader())
+            .processor(sqlToMongoBookProcessor())
+            .writer(mongoBookWriter())
+            .build();
+    }
+
+    @Bean
+    public JpaPagingItemReader<ru.nchernetsov.domain.sql.Book> sqlBookReader() {
+        JpaPagingItemReader<ru.nchernetsov.domain.sql.Book> jpaPagingItemReader = new JpaPagingItemReader<>();
+        jpaPagingItemReader.setEntityManagerFactory(entityManagerFactory);
+        jpaPagingItemReader.setQueryString("SELECT b FROM Book b");
+        jpaPagingItemReader.setPageSize(10);
+        return jpaPagingItemReader;
+    }
+
+    @Bean
+    public ItemProcessor<ru.nchernetsov.domain.sql.Book, ru.nchernetsov.domain.mongodb.Book> sqlToMongoBookProcessor() {
+        return sqlBook -> {
+            ru.nchernetsov.domain.mongodb.Book mongoDbBook = new ru.nchernetsov.domain.mongodb.Book();
+            mongoDbBook.setTitle(sqlBook.getTitle());
+            // TODO: добавить сохранение авторов, жанров и комментариев
+            return mongoDbBook;
+        };
+    }
+
+    @Bean
+    public MongoItemWriter<ru.nchernetsov.domain.mongodb.Book> mongoBookWriter() {
+        MongoItemWriter<ru.nchernetsov.domain.mongodb.Book> mongoItemWriter = new MongoItemWriter<>();
+        mongoItemWriter.setTemplate(mongoOperations);
+        return mongoItemWriter;
+    }
 
     // 4. Комментарии
 
