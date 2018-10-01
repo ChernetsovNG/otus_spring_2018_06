@@ -6,13 +6,24 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
+import ru.nchernetsov.domain.mongodb.Book;
+import ru.nchernetsov.domain.sql.Author;
+import ru.nchernetsov.domain.sql.Comment;
+import ru.nchernetsov.domain.sql.Genre;
+import ru.nchernetsov.repository.mongodb.MongoDBAuthorRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBBookRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBCommentRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBGenreRepository;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableBatchProcessing
@@ -24,14 +35,26 @@ public class BatchConfig {
 
     private final EntityManagerFactory entityManagerFactory;
 
-    private final MongoOperations mongoOperations;
+    private final MongoDBAuthorRepository mongoDBAuthorRepository;
 
+    private final MongoDBGenreRepository mongoDBGenreRepository;
+
+    private final MongoDBBookRepository mongoDBBookRepository;
+
+    private final MongoDBCommentRepository mongoDBCommentRepository;
+
+    @Autowired
     public BatchConfig(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobBuilderFactory,
-                       EntityManagerFactory entityManagerFactory, MongoOperations mongoOperations) {
+                       EntityManagerFactory entityManagerFactory, MongoDBAuthorRepository mongoDBAuthorRepository,
+                       MongoDBGenreRepository mongoDBGenreRepository, MongoDBBookRepository mongoDBBookRepository,
+                       MongoDBCommentRepository mongoDBCommentRepository) {
         this.stepBuilderFactory = stepBuilderFactory;
         this.jobBuilderFactory = jobBuilderFactory;
         this.entityManagerFactory = entityManagerFactory;
-        this.mongoOperations = mongoOperations;
+        this.mongoDBAuthorRepository = mongoDBAuthorRepository;
+        this.mongoDBGenreRepository = mongoDBGenreRepository;
+        this.mongoDBBookRepository = mongoDBBookRepository;
+        this.mongoDBCommentRepository = mongoDBCommentRepository;
     }
 
     // Работа по миграции
@@ -39,62 +62,18 @@ public class BatchConfig {
     @Bean
     public Job sqlToMongoMigrationJob() {
         return jobBuilderFactory.get("sqlToMongoMigrationJob")
-            .start(sqlToMongoMigrationBooksStep())
-  //          .next(sqlToMongoMigrationAuthorsStep())
-            .build();
+                .start(sqlToMongoMigrationBooksStep())
+                .build();
     }
-
-    // Шаги миграции:
-
-    // 1. Авторы
-
-    @Bean
-    public Step sqlToMongoMigrationAuthorsStep() {
-        return stepBuilderFactory.get("sqlToMongoMigrationAuthorsStep")
-            .<ru.nchernetsov.domain.sql.Author, ru.nchernetsov.domain.mongodb.Author>chunk(5)
-            .reader(sqlAuthorReader())
-            .processor(sqlToMongoAuthorProcessor())
-            .writer(mongoAuthorWriter())
-            .build();
-    }
-
-    @Bean
-    public JpaPagingItemReader<ru.nchernetsov.domain.sql.Author> sqlAuthorReader() {
-        JpaPagingItemReader<ru.nchernetsov.domain.sql.Author> jpaPagingItemReader = new JpaPagingItemReader<>();
-        jpaPagingItemReader.setEntityManagerFactory(entityManagerFactory);
-        jpaPagingItemReader.setQueryString("SELECT a FROM Author a");
-        jpaPagingItemReader.setPageSize(10);
-        return jpaPagingItemReader;
-    }
-
-    @Bean
-    public ItemProcessor<ru.nchernetsov.domain.sql.Author, ru.nchernetsov.domain.mongodb.Author> sqlToMongoAuthorProcessor() {
-        return sqlAuthor -> {
-            ru.nchernetsov.domain.mongodb.Author mongoDbAuthor = new ru.nchernetsov.domain.mongodb.Author();
-            mongoDbAuthor.setName(sqlAuthor.getName());
-            return mongoDbAuthor;
-        };
-    }
-
-    @Bean
-    public MongoItemWriter<ru.nchernetsov.domain.mongodb.Author> mongoAuthorWriter() {
-        MongoItemWriter<ru.nchernetsov.domain.mongodb.Author> mongoItemWriter = new MongoItemWriter<>();
-        mongoItemWriter.setTemplate(mongoOperations);
-        return mongoItemWriter;
-    }
-
-    // 2. Жанры
-
-    // 3. Книги
 
     @Bean
     public Step sqlToMongoMigrationBooksStep() {
         return stepBuilderFactory.get("sqlToMongoMigrationBooksStep")
-            .<ru.nchernetsov.domain.sql.Book, ru.nchernetsov.domain.mongodb.Book>chunk(5)
-            .reader(sqlBookReader())
-            .processor(sqlToMongoBookProcessor())
-            .writer(mongoBookWriter())
-            .build();
+                .<ru.nchernetsov.domain.sql.Book, ru.nchernetsov.domain.mongodb.Book>chunk(5)
+                .reader(sqlBookReader())
+                .processor(sqlToMongoBookProcessor())
+                .writer(mongoBookWriter())
+                .build();
     }
 
     @Bean
@@ -109,20 +88,105 @@ public class BatchConfig {
     @Bean
     public ItemProcessor<ru.nchernetsov.domain.sql.Book, ru.nchernetsov.domain.mongodb.Book> sqlToMongoBookProcessor() {
         return sqlBook -> {
-            ru.nchernetsov.domain.mongodb.Book mongoDbBook = new ru.nchernetsov.domain.mongodb.Book();
+            ru.nchernetsov.domain.mongodb.Book mongoDbBook = new ru.nchernetsov.domain.mongodb.Book(null, null);
             mongoDbBook.setTitle(sqlBook.getTitle());
-            // TODO: добавить сохранение авторов, жанров и комментариев
+
+            List<Author> sqlAuthors = sqlBook.getAuthors();
+            List<Genre> sqlGenres = sqlBook.getGenres();
+            List<Comment> sqlComments = sqlBook.getComments();
+
+            List<ru.nchernetsov.domain.mongodb.Author> mongoDBAuthors = sqlAuthors.stream()
+                    .map(sqlAuthor -> new ru.nchernetsov.domain.mongodb.Author(null, sqlAuthor.getName()))
+                    .collect(Collectors.toList());
+
+            List<ru.nchernetsov.domain.mongodb.Genre> mongoDBGenres = sqlGenres.stream()
+                    .map(sqlGenre -> new ru.nchernetsov.domain.mongodb.Genre(null, sqlGenre.getName()))
+                    .collect(Collectors.toList());
+
+            List<ru.nchernetsov.domain.mongodb.Comment> mongoDBComments = sqlComments.stream()
+                    .map(sqlComment -> new ru.nchernetsov.domain.mongodb.Comment(null, sqlComment.getComment()))
+                    .collect(Collectors.toList());
+
+            mongoDbBook.setAuthors(mongoDBAuthors);
+            mongoDbBook.setGenres(mongoDBGenres);
+            mongoDbBook.setComments(mongoDBComments);
+
             return mongoDbBook;
         };
     }
 
     @Bean
-    public MongoItemWriter<ru.nchernetsov.domain.mongodb.Book> mongoBookWriter() {
-        MongoItemWriter<ru.nchernetsov.domain.mongodb.Book> mongoItemWriter = new MongoItemWriter<>();
-        mongoItemWriter.setTemplate(mongoOperations);
-        return mongoItemWriter;
+    public ItemWriter<Book> mongoBookWriter() {
+        return books -> {
+            for (Book book : books) {
+                List<ru.nchernetsov.domain.mongodb.Author> authors = saveOrGetAuthorsFromMongoDB(book);
+                List<ru.nchernetsov.domain.mongodb.Genre> genres = saveOrGetGenresFromMongoDB(book);
+                List<ru.nchernetsov.domain.mongodb.Comment> comments = saveCommentsIntoMongoDB(book);
+
+                // Устанавливаем книге ссылки на авторов, жанры и комментарии
+                book.setAuthors(authors);
+                book.setGenres(genres);
+                book.setComments(comments);
+
+                Book savedBook = mongoDBBookRepository.save(book);
+
+                // Устанавливаем авторам, жанрам и комментариям ссылку на книгу
+                authors.forEach(author -> author.addBook(savedBook));
+                genres.forEach(genre -> genre.addBook(savedBook));
+                comments.forEach(comment -> comment.setBook(savedBook));
+
+                mongoDBAuthorRepository.saveAll(authors);
+                mongoDBGenreRepository.saveAll(genres);
+                mongoDBCommentRepository.saveAll(comments);
+            }
+        };
     }
 
-    // 4. Комментарии
+    // Если автор уже был сохранён в MongoDB, то получаем его оттуда, иначе сохраняем
+    private List<ru.nchernetsov.domain.mongodb.Author> saveOrGetAuthorsFromMongoDB(Book book) {
+        List<ru.nchernetsov.domain.mongodb.Author> authors = book.getAuthors();
+
+        List<ru.nchernetsov.domain.mongodb.Author> mongoAuthors = new ArrayList<>();
+        for (ru.nchernetsov.domain.mongodb.Author author : authors) {
+            ru.nchernetsov.domain.mongodb.Author savedAuthor;
+            if (!mongoDBAuthorRepository.existsByName(author.getName())) {
+                savedAuthor = mongoDBAuthorRepository.save(author);
+            } else {
+                savedAuthor = mongoDBAuthorRepository.findByName(author.getName());
+            }
+            mongoAuthors.add(savedAuthor);
+        }
+
+        return mongoAuthors;
+    }
+
+    private List<ru.nchernetsov.domain.mongodb.Genre> saveOrGetGenresFromMongoDB(Book book) {
+        List<ru.nchernetsov.domain.mongodb.Genre> genres = book.getGenres();
+
+        List<ru.nchernetsov.domain.mongodb.Genre> mongoGenres = new ArrayList<>();
+        for (ru.nchernetsov.domain.mongodb.Genre genre : genres) {
+            ru.nchernetsov.domain.mongodb.Genre savedGenre;
+            if (!mongoDBGenreRepository.existsByName(genre.getName())) {
+                savedGenre = mongoDBGenreRepository.save(genre);
+            } else {
+                savedGenre = mongoDBGenreRepository.findByName(genre.getName());
+            }
+            mongoGenres.add(savedGenre);
+        }
+
+        return mongoGenres;
+    }
+
+    private List<ru.nchernetsov.domain.mongodb.Comment> saveCommentsIntoMongoDB(Book book) {
+        List<ru.nchernetsov.domain.mongodb.Comment> comments = book.getComments();
+
+        List<ru.nchernetsov.domain.mongodb.Comment> mongoComments = new ArrayList<>();
+        for (ru.nchernetsov.domain.mongodb.Comment comment : comments) {
+            ru.nchernetsov.domain.mongodb.Comment savedComment = mongoDBCommentRepository.save(comment);
+            mongoComments.add(savedComment);
+        }
+
+        return mongoComments;
+    }
 
 }

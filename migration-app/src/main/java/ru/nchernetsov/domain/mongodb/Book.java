@@ -38,6 +38,11 @@ public class Book {
         this.title = title;
     }
 
+    public Book(String id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public Book(String title, List<Author> authors, List<Genre> genres) {
         this();
         this.title = title;
@@ -127,8 +132,11 @@ public class Book {
     @Override
     public String toString() {
         return "Book{" +
-            "title='" + title + '\'' +
-            '}';
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", authors=" + authors +
+                ", genres=" + genres +
+                ", comments=" + comments +
+                '}';
     }
-
 }
