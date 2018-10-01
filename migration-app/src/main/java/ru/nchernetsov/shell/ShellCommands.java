@@ -13,6 +13,9 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nchernetsov.repository.jpa.SqlAuthorRepository;
 import ru.nchernetsov.repository.mongodb.MongoDBAuthorRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBBookRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBCommentRepository;
+import ru.nchernetsov.repository.mongodb.MongoDBGenreRepository;
 
 import java.util.List;
 
@@ -23,15 +26,25 @@ public class ShellCommands {
 
     private final MongoDBAuthorRepository mongoDBAuthorRepository;
 
+    private final MongoDBGenreRepository mongoDBGenreRepository;
+
+    private final MongoDBCommentRepository mongoDBCommentRepository;
+
+    private final MongoDBBookRepository mongoDBBookRepository;
+
     private final JobLauncher jobLauncher;
 
     private final Job sqlToMongoMigrationJob;
 
     @Autowired
     public ShellCommands(SqlAuthorRepository sqlAuthorRepository, MongoDBAuthorRepository mongoDBAuthorRepository,
-                         JobLauncher jobLauncher, Job sqlToMongoMigrationJob) {
+                         MongoDBGenreRepository mongoDBGenreRepository, MongoDBCommentRepository mongoDBCommentRepository,
+                         MongoDBBookRepository mongoDBBookRepository, JobLauncher jobLauncher, Job sqlToMongoMigrationJob) {
         this.sqlAuthorRepository = sqlAuthorRepository;
         this.mongoDBAuthorRepository = mongoDBAuthorRepository;
+        this.mongoDBGenreRepository = mongoDBGenreRepository;
+        this.mongoDBCommentRepository = mongoDBCommentRepository;
+        this.mongoDBBookRepository = mongoDBBookRepository;
         this.jobLauncher = jobLauncher;
         this.sqlToMongoMigrationJob = sqlToMongoMigrationJob;
     }
@@ -48,6 +61,18 @@ public class ShellCommands {
         return mongoDBAuthorRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    @ShellMethod("Show Genres in MongoDB")
+    public List<ru.nchernetsov.domain.mongodb.Genre> showGenresMongo() {
+        return mongoDBGenreRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @ShellMethod("Show Books in MongoDB")
+    public List<ru.nchernetsov.domain.mongodb.Book> showBooksMongo() {
+        return mongoDBBookRepository.findAll();
+    }
+
     @ShellMethod("Start Migration from Sql to Mongo")
     public void migrationStart() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         jobLauncher.run(sqlToMongoMigrationJob, new JobParameters());
@@ -55,9 +80,10 @@ public class ShellCommands {
 
     @ShellMethod("Clear all data from MongoDB")
     public void migrationClear() {
-        sqlAuthorRepository.deleteAll();
-
         mongoDBAuthorRepository.deleteAll();
+        mongoDBGenreRepository.deleteAll();
+        mongoDBCommentRepository.deleteAll();
+        mongoDBBookRepository.deleteAll();
     }
 
 }
