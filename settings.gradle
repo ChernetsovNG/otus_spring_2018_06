@@ -3,3 +3,5 @@ include 'testing-service'
 include 'testing-service-spring-boot'
 include 'library-info-app'
 include 'migration-app'
+include 'spring-integration-app'
+

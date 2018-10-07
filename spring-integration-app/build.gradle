@@ -1,0 +1,9 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+version = '0.1-SNAPSHOT'
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-integration')
+}
