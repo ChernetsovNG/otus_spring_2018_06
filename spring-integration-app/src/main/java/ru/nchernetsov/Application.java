@@ -29,8 +29,6 @@ public class Application implements ApplicationRunner {
         for (int i = 0; i < 10; i++) {
             Message<?> message = MessageBuilder
                     .withPayload(i)
-                    .setHeader("messageNumber", i)
-                    .setHeader("routeHeader", "string")
                     .build();
 
             gateway.print(message);

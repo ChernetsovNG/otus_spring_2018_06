@@ -10,21 +10,23 @@
     <int:gateway service-interface="ru.nchernetsov.integration.PrinterGateway"
                  default-request-channel="inputChannel"/>
 
-    <bean id="customRouter" class="ru.nchernetsov.integration.CustomRouter"/>
-
-    <int:router ref="customRouter" input-channel="inputChannel"/>
-
     <int:channel id="inputChannel"/>
 
     <int:channel id="intChannel"/>
 
     <int:channel id="stringChannel"/>
 
+    <int:channel id="outputChannel"/>
+
+    <bean id="customFilter" class="ru.nchernetsov.integration.CustomFilter"/>
+
+    <int:filter ref="customFilter" input-channel="inputChannel" output-channel="outputChannel"/>
+
     <bean class="ru.nchernetsov.integration.PrintService" id="printService"/>
 
     <bean class="ru.nchernetsov.integration.NumericPrintService" id="numericPrintService"/>
 
-    <int:service-activator ref="printService" method="print" input-channel="stringChannel"/>
+    <int:service-activator ref="printService" method="print" input-channel="outputChannel"/>
 
     <int:service-activator ref="numericPrintService" method="print" input-channel="intChannel"/>
 
