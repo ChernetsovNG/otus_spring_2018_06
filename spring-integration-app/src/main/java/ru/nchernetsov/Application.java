@@ -27,8 +27,8 @@ public class Application implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         for (int i = 0; i < 10; i++) {
-            Message<String> message = MessageBuilder
-                .withPayload("Printing message payload for " + i)
+            Message<?> message = MessageBuilder
+                .withPayload(i)
                 .setHeader("messageNumber", i)
                 .build();
 
