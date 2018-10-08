@@ -10,10 +10,9 @@
     <int:gateway service-interface="ru.nchernetsov.integration.PrinterGateway"
                  default-request-channel="inputChannel"/>
 
-    <int:header-value-router input-channel="inputChannel" header-name="routeHeader">
-        <int:mapping value="int" channel="intChannel"/>
-        <int:mapping value="string" channel="stringChannel"/>
-    </int:header-value-router>
+    <bean id="customRouter" class="ru.nchernetsov.integration.CustomRouter"/>
+
+    <int:router ref="customRouter" input-channel="inputChannel"/>
 
     <int:channel id="inputChannel"/>
 
