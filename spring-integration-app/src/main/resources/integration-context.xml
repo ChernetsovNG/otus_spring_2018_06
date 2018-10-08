@@ -18,9 +18,9 @@
 
     <int:channel id="outputChannel"/>
 
-    <bean id="customFilter" class="ru.nchernetsov.integration.CustomFilter"/>
+    <bean id="customSplitter" class="ru.nchernetsov.integration.CustomSplitter"/>
 
-    <int:filter ref="customFilter" input-channel="inputChannel" output-channel="outputChannel"/>
+    <int:splitter ref="customSplitter" input-channel="inputChannel" output-channel="outputChannel"/>
 
     <bean class="ru.nchernetsov.integration.PrintService" id="printService"/>
 
