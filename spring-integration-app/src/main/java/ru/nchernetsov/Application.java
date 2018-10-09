@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import ru.nchernetsov.domain.Person;
 import ru.nchernetsov.integration.PrinterGateway;
 
 @SpringBootApplication
@@ -26,9 +27,12 @@ public class Application implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        for (int i = 0; i < 10; i++) {
+        Person[] persons = {new Person("Nikita", "Chernetsov"), new Person("John", "Snow"),
+                new Person("Jane", "Dou")};
+
+        for (Person person : persons) {
             Message<?> message = MessageBuilder
-                    .withPayload("Message payload: " + i)
+                    .withPayload(person)
                     .build();
 
             gateway.print(message);

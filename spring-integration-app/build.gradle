@@ -6,4 +6,6 @@ version = '0.1-SNAPSHOT'
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
+    
+    compile('com.fasterxml.jackson.core:jackson-databind')
 }
