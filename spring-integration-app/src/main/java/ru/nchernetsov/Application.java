@@ -17,9 +17,6 @@ import ru.nchernetsov.integration.PrinterGateway;
 @ImportResource("integration-context.xml")
 public class Application implements ApplicationRunner {
 
-    @Autowired
-    private PrinterGateway gateway;
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -27,7 +24,7 @@ public class Application implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        Person[] persons = {new Person("Nikita", "Chernetsov"), new Person("John", "Snow"),
+        /*Person[] persons = {new Person("Nikita", "Chernetsov"), new Person("John", "Snow"),
                 new Person("Jane", "Dou")};
 
         for (Person person : persons) {
@@ -36,7 +33,7 @@ public class Application implements ApplicationRunner {
                     .build();
 
             gateway.print(message);
-        }
+        }*/
     }
 
 }

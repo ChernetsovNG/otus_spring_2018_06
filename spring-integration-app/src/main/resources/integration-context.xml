@@ -2,31 +2,27 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/integration
-        http://www.springframework.org/schema/integration/spring-integration-5.0.xsd">
-
-    <int:gateway service-interface="ru.nchernetsov.integration.PrinterGateway"
-                 default-request-channel="inputChannel"/>
-
-    <int:channel id="inputChannel"/>
-    <int:channel id="outputChannel"/>
-    <int:channel id="enricherChannel"/>
-    <int:channel id="requestChannel"/>
-
-    <bean id="customService" class="ru.nchernetsov.integration.CustomService"/>
-
-    <int:service-activator ref="customService" input-channel="requestChannel" method="getPhoneNumber"/>
-
-    <int:enricher input-channel="inputChannel" request-channel="requestChannel" output-channel="enricherChannel">
-        <int:property name="phoneNumber" expression="payload"/>
-    </int:enricher>
-
-    <int:object-to-json-transformer input-channel="enricherChannel" output-channel="outputChannel"/>
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/integration
+    http://www.springframework.org/schema/integration/spring-integration.xsd
+    http://www.springframework.org/schema/integration/file
+    http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
 
     <bean class="ru.nchernetsov.integration.PrintService" id="printService"/>
 
-    <int:service-activator ref="printService" method="print" input-channel="outputChannel"/>
+    <int-file:inbound-channel-adapter
+            directory="file:src/test/read"
+            filename-pattern="sample.txt"
+            channel="fileInboundChannel">
+        <int:poller fixed-rate="1000" time-unit="MILLISECONDS"/>
+    </int-file:inbound-channel-adapter>
+
+    <int:channel id="fileInboundChannel"/>
+
+    <bean id="filePrinter" class="ru.nchernetsov.integration.FilePrinter"/>
+
+    <int:service-activator ref="filePrinter" method="print" input-channel="fileInboundChannel"/>
 
 </beans>
