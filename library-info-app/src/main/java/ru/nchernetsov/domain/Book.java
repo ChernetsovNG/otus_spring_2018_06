@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Document(collection = "books")
 public class Book {
@@ -89,17 +88,13 @@ public class Book {
         return Collections.unmodifiableList(comments);
     }
 
-    public List<String> getCommentsIds() {
-        return comments.stream().map(Comment::getId).collect(Collectors.toList());
-    }
-
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
     public void removeComment(String commentText) {
         for (Comment comment : comments) {
-            if (comment.getComment().equals(commentText)) {
+            if (comment.getText().equals(commentText)) {
                 comments.remove(comment);
                 break;
             }
@@ -130,6 +125,5 @@ public class Book {
             "title='" + title + '\'' +
             '}';
     }
-
 
 }
