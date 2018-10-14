@@ -5,14 +5,7 @@ management:
   endpoints:
     web:
       exposure:
-        include:
-          - beans
-          - health
-          - metrics
-          - env
-          - configprops
-          - mappings
-          - logfile
+        include: "*"
 
 spring:
   data:
