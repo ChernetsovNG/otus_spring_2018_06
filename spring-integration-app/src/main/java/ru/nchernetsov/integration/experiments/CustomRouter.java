@@ -1,4 +1,4 @@
-package ru.nchernetsov.integration;
+package ru.nchernetsov.integration.experiments;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

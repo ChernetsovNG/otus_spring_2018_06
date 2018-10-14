@@ -1,4 +1,4 @@
-package ru.nchernetsov.integration;
+package ru.nchernetsov.integration.experiments;
 
 import org.springframework.messaging.Message;
 

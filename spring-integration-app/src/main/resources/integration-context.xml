@@ -10,7 +10,7 @@
     http://www.springframework.org/schema/integration/file
     http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
 
-    <bean class="ru.nchernetsov.integration.PrintService" id="printService"/>
+    <bean class="ru.nchernetsov.integration.experiments.PrintService" id="printService"/>
 
     <int-file:inbound-channel-adapter
             directory="file:src/test/read"
@@ -21,7 +21,7 @@
 
     <int:channel id="fileInboundChannel"/>
 
-    <bean id="filePrinter" class="ru.nchernetsov.integration.FilePrinter"/>
+    <bean id="filePrinter" class="ru.nchernetsov.integration.experiments.FilePrinter"/>
 
     <int:service-activator ref="filePrinter" method="print" input-channel="fileInboundChannel"/>
 

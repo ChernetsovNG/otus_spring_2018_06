@@ -1,39 +1,67 @@
 package ru.nchernetsov;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.Message;
-import ru.nchernetsov.domain.Person;
-import ru.nchernetsov.integration.PrinterGateway;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.integration.config.EnableIntegration;
+import ru.nchernetsov.domain.Book;
+import ru.nchernetsov.config.InfrastructureConfiguration;
+import ru.nchernetsov.repository.AuthorRepository;
+import ru.nchernetsov.repository.BookRepository;
+import ru.nchernetsov.repository.CommentRepository;
+import ru.nchernetsov.repository.GenreRepository;
+
+import java.util.List;
 
 @SpringBootApplication
-@Configuration
-@ImportResource("integration-context.xml")
-public class Application implements ApplicationRunner {
+@EnableIntegration
+// @ImportResource("integration-context.xml")
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+        new Application().start(context);
     }
 
-    @Override
-    public void run(ApplicationArguments args) {
+    public void start(ConfigurableApplicationContext context) {
+        resetDatabase(context);
+        initDatabase(context);
 
-        /*Person[] persons = {new Person("Nikita", "Chernetsov"), new Person("John", "Snow"),
-                new Person("Jane", "Dou")};
+        InfrastructureConfiguration.BookService bookService = context.getBean(InfrastructureConfiguration.BookService.class);
+        BookRepository bookRepository = context.getBean(BookRepository.class);
 
-        for (Person person : persons) {
-            Message<?> message = MessageBuilder
-                    .withPayload(person)
-                    .build();
+        List<Book> books = bookRepository.findAll();
 
-            gateway.print(message);
-        }*/
+        for (Book book : books) {
+            bookService.book(book);
+        }
+
+    }
+
+    private void resetDatabase(ConfigurableApplicationContext context) {
+        AuthorRepository authorRepository = context.getBean(AuthorRepository.class);
+        GenreRepository genreRepository = context.getBean(GenreRepository.class);
+        BookRepository bookRepository = context.getBean(BookRepository.class);
+        CommentRepository commentRepository = context.getBean(CommentRepository.class);
+
+        authorRepository.deleteAll();
+        genreRepository.deleteAll();
+        bookRepository.deleteAll();
+        commentRepository.deleteAll();
+    }
+
+    private void initDatabase(ConfigurableApplicationContext context) {
+        AuthorRepository authorRepository = context.getBean(AuthorRepository.class);
+        GenreRepository genreRepository = context.getBean(GenreRepository.class);
+        BookRepository bookRepository = context.getBean(BookRepository.class);
+        CommentRepository commentRepository = context.getBean(CommentRepository.class);
+
+        TestData testData = new TestData();
+
+        authorRepository.saveAll(testData.getAuthorsMap().values());
+        genreRepository.saveAll(testData.getGenresMap().values());
+        bookRepository.saveAll(testData.getBooksMap().values());
+        commentRepository.saveAll(testData.getCommentsMap().values());
     }
 
 }

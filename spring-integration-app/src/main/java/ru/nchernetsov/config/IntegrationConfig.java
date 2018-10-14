@@ -9,10 +9,10 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.channel.MessageChannels;
 import org.springframework.messaging.Message;
-import ru.nchernetsov.integration.PrintService;
+import ru.nchernetsov.integration.experiments.PrintService;
 
-@Configuration
-@EnableIntegration
+//@Configuration
+//@EnableIntegration
 public class IntegrationConfig {
 
     private final PrintService service;
