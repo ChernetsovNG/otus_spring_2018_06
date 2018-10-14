@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<div class="container">
+    <th:block th:include="fragments/menu :: menu">Menu</th:block>
+</div>
+
+<div class="container">
+    <h1>User details</h1>
+
+    <div class="text-left">
+        Username: <p th:text="${user.username}">Username</p>
+        Authorities: <p th:text="${user.authorities}">Authorities</p>
+    </div>
+
+    <form class="form-group" th:action="@{/appLogout}" method="POST">
+        <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
+</div>
+
+</body>
+
+</html>

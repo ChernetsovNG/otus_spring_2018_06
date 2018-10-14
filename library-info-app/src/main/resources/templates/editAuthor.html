@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Author</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<div class="container">
+    <th:block th:include="fragments/menu :: menu">Menu</th:block>
+</div>
+
+<div class="container">
+
+    <h1>Author</h1>
+
+    <form class="form-group" action="/authors/edit" th:action="@{/authors/edit}" method="post">
+        <label>
+            <input th:type="hidden" name="id" th:field="${author.id}"/>
+        </label>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" th:field="${author.name}"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="#" th:href="@{/}" class="btn btn-danger" role="button">Cancel</a>
+    </form>
+
+</div>
+
+</body>
+</html>

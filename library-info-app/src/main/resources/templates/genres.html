@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Genres</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<div class="container">
+    <th:block th:include="fragments/menu :: menu">Menu</th:block>
+</div>
+
+<div class="container">
+
+    <h1>Genres</h1>
+
+    <p>
+        <a href="/genres/edit" th:href="@{/genres/edit}">Create</a>
+    </p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="genre : ${genres}">
+            <td th:text="${genre.id}">Id</td>
+            <td th:text="${genre.name}">Name</td>
+            <td>
+                <a href="/genres/edit/1" th:href="@{/genres/edit/__${genre.id}__}">Edit</a>
+                <a href="/genres/delete/1" th:href="@{/genres/delete/__${genre.id}__}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

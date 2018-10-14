@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Genre</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<div class="container">
+    <th:block th:include="fragments/menu :: menu">Menu</th:block>
+</div>
+
+<div class="container">
+
+    <h1>Genre</h1>
+
+    <form class="form-group" action="/genres/edit" th:action="@{/genres/edit}" method="post">
+        <label>
+            <input th:type="hidden" name="id" th:field="${genre.id}"/>
+        </label>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" th:field="${genre.name}"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="#" th:href="@{/}" class="btn btn-danger" role="button">Cancel</a>
+    </form>
+
+</div>
+
+</body>
+</html>

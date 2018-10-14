@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Comment</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#" th:href="@{/books}">Books</a></li>
+            <li><a href="#" th:href="@{/authors}">Authors</a></li>
+            <li><a href="#" th:href="@{/genres}">Genres</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+
+    <h1>Comment</h1>
+
+    <form class="form-group" action="/comments/add" th:action="@{/comments/add(bookId=${bookId})}" method="post">
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" rows="5" id="comment" th:field="${comment.comment}"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="#" th:href="@{/}" class="btn btn-danger" role="button">Cancel</a>
+    </form>
+
+</div>
+
+</body>
+</html>

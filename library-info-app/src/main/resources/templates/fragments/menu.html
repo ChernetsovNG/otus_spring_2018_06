@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
+<body>
+<div class="container" th:fragment="menu">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+        <div class="container">
+            <ul class="navbar-nav">
+                <li><a class="nav-link" href="#" th:href="@{/books}">Books</a></li>
+                <li><a class="nav-link" href="#" th:href="@{/authors}">Authors</a></li>
+                <li><a class="nav-link" href="#" th:href="@{/genres}">Genres</a></li>
+                <li><a class="nav-link" href="#" th:href="@{/auth/userDetails}">User Details</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+</body>
+
+</html>

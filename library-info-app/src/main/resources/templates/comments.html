@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Comments</title>
+    <th:block th:include="fragments/head :: head">Head</th:block>
+</head>
+
+<body>
+
+<div class="container">
+    <th:block th:include="fragments/menu :: menu">Menu</th:block>
+</div>
+
+<div class="container">
+
+    <h1>Book: <span th:text="${bookTitle}">Test</span></h1>
+    <h2>Comments</h2>
+
+    <p>
+        <a href="/comments/add/1" th:href="@{/comments/add/__${bookId}__}">Add comment</a>
+    </p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Timestamp</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}">Id</td>
+            <td th:text="${comment.timestamp}">Timestamp</td>
+            <td th:text="${comment.comment}">Comment Text</td>
+            <td>
+                <a href="/comments/delete/1" th:href="@{/comments/delete/__${comment.id}__}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
