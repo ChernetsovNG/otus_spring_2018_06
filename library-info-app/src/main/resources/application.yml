@@ -5,7 +5,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: threaddump, env, configprops
+        include:
+          - beans
+          - health
+          - metrics
+          - env
+          - configprops
+          - mappings
+          - logfile
 
 spring:
   data:
