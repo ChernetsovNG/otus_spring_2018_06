@@ -47,8 +47,8 @@ public class TestData {
         book1.setGenres(Collections.singletonList(genresMap.get(10)));
         genresMap.get(10).addBook(book1);
         book1.setComments(Arrays.asList(commentsMap.get(10), commentsMap.get(11)));
-        commentsMap.get(10).setBookId(book1.getId());
-        commentsMap.get(11).setBookId(book1.getId());
+        commentsMap.get(10).setBookId(book1.getBookId());
+        commentsMap.get(11).setBookId(book1.getBookId());
         booksMap.put(10, book1);
 
         Book book2 = new Book();
@@ -70,8 +70,8 @@ public class TestData {
         genresMap.get(10).addBook(book3);
         genresMap.get(12).addBook(book3);
         book3.setComments(Arrays.asList(commentsMap.get(12), commentsMap.get(13)));
-        commentsMap.get(12).setBookId(book3.getId());
-        commentsMap.get(13).setBookId(book3.getId());
+        commentsMap.get(12).setBookId(book3.getBookId());
+        commentsMap.get(13).setBookId(book3.getBookId());
         booksMap.put(12, book3);
 
         Book book4 = new Book();
