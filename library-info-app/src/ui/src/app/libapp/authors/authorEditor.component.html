@@ -1,0 +1,15 @@
+<div class="bg-primary p-3" [class.bg-warning]="editing">
+    <h5>{{editing ? "Edit" : "Create"}} Author</h5>
+</div>
+<form novalidate #form="ngForm" (ngSubmit)="save(form)">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" name="name" id="name" [(ngModel)]="author.name"/>
+    </div>
+    <button type="submit" class="btn btn-primary" [class.btn-warning]="editing">
+        {{editing ? "Save" : "Create"}}
+    </button>
+    <button type="reset" class="btn btn-secondary" routerLink="/authors">
+        Cancel
+    </button>
+</form>
