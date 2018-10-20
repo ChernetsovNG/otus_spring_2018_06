@@ -60,7 +60,7 @@ public class CommentServiceTest extends MongoDBTest {
         List<Comment> comments = book.getComments();
 
         assertThat(comments).hasSize(1);
-        assertThat(comments.get(0).getComment()).contains("неудержимое желание познакомиться с Хемингуэем поближе");
+        assertThat(comments.get(0).getText()).contains("неудержимое желание познакомиться с Хемингуэем поближе");
     }
 
 }
