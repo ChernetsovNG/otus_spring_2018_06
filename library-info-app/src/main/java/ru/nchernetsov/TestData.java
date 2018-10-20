@@ -40,7 +40,7 @@ public class TestData {
         createComments();
 
         Book book1 = new Book();
-        book1.setId(UUID.randomUUID().toString());
+        book1.setBookId(UUID.randomUUID().toString());
         book1.setTitle("Бойня номер пять, или Крестовый поход детей");
         book1.setAuthors(Collections.singletonList(authorsMap.get(10)));
         authorsMap.get(10).addBook(book1);
@@ -52,7 +52,7 @@ public class TestData {
         booksMap.put(10, book1);
 
         Book book2 = new Book();
-        book2.setId(UUID.randomUUID().toString());
+        book2.setBookId(UUID.randomUUID().toString());
         book2.setTitle("Белый клык");
         book2.setAuthors(Collections.singletonList(authorsMap.get(11)));
         authorsMap.get(11).addBook(book2);
@@ -62,7 +62,7 @@ public class TestData {
         booksMap.put(11, book2);
 
         Book book3 = new Book();
-        book3.setId(UUID.randomUUID().toString());
+        book3.setBookId(UUID.randomUUID().toString());
         book3.setTitle("Оно");
         book3.setAuthors(Collections.singletonList(authorsMap.get(12)));
         authorsMap.get(12).addBook(book3);
@@ -75,7 +75,7 @@ public class TestData {
         booksMap.put(12, book3);
 
         Book book4 = new Book();
-        book4.setId(UUID.randomUUID().toString());
+        book4.setBookId(UUID.randomUUID().toString());
         book4.setTitle("Война и мир");
         book4.setAuthors(Collections.singletonList(authorsMap.get(13)));
         authorsMap.get(13).addBook(book4);
@@ -84,7 +84,7 @@ public class TestData {
         booksMap.put(13, book4);
 
         Book book5 = new Book();
-        book5.setId(UUID.randomUUID().toString());
+        book5.setBookId(UUID.randomUUID().toString());
         book5.setTitle("Философия Java");
         book5.setAuthors(Collections.singletonList(authorsMap.get(14)));
         authorsMap.get(14).addBook(book5);
@@ -93,7 +93,7 @@ public class TestData {
         booksMap.put(14, book5);
 
         Book book6 = new Book();
-        book6.setId(UUID.randomUUID().toString());
+        book6.setBookId(UUID.randomUUID().toString());
         book6.setTitle("Праздник, который всегда с тобой");
         book6.setAuthors(Collections.singletonList(authorsMap.get(15)));
         authorsMap.get(15).addBook(book6);
@@ -166,5 +166,4 @@ public class TestData {
                 "\n" +
                 "          Кстати, опять-таки, по словам Кинга, роман в значительной степени воспроизводит детские впечатления самого писателя: и Барренс, и Кендускеаг, и даже Генри Бауэрс — все это было на самом деле... Кто знает, может быть на самом деле был (и есть сейчас) и сам клоун Пеннивайз?..."));
     }
-
 }

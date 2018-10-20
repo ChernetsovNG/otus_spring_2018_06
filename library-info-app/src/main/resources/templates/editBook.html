@@ -17,7 +17,7 @@
 
     <form th:object="${book}" class="form-group" action="/books/edit" th:action="@{/books/edit}" method="post">
         <label>
-            <input th:type="hidden" name="id" th:field="*{id}"/>
+            <input th:type="hidden" name="id" th:field="*{bookId}"/>
         </label>
 
         <div class="form-group">

@@ -77,7 +77,7 @@ public class BookController {
         genreService.createOrUpdateGenreList(genres);
 
         // Восстанавливаем комментарии (которые не поулчилось передать в POST-запросе с формы)
-        List<Comment> comments = commentService.getBookComments(book.getId());
+        List<Comment> comments = commentService.getBookComments(book.getBookId());
         book.setComments(comments);
 
         bookService.createOrUpdateBook(book);
@@ -94,5 +94,4 @@ public class BookController {
 
         return "redirect:/books";
     }
-
 }

@@ -32,16 +32,16 @@
         </thead>
         <tbody>
         <tr th:each="book : ${books}">
-            <td th:text="${book.id}">1</td>
+            <td th:text="${book.bookId}">1</td>
             <td th:text="${book.title}">Title</td>
             <td th:text="${book.authors}">Authors</td>
             <td th:text="${book.genres}">Genres</td>
             <td>
-                <a href="/comments/books/1" th:href="@{/comments/books/__${book.id}__}">Show comments</a>
+                <a href="/comments/books/1" th:href="@{/comments/books/__${book.bookId}__}">Show comments</a>
             </td>
             <td>
-                <a href="/books/edit/1" th:href="@{/books/edit/__${book.id}__}">Edit</a>
-                <a href="/books/delete/1" th:href="@{/books/delete/__${book.id}__}">Delete</a>
+                <a href="/books/edit/1" th:href="@{/books/edit/__${book.bookId}__}">Edit</a>
+                <a href="/books/delete/1" th:href="@{/books/delete/__${book.bookId}__}">Delete</a>
             </td>
         </tr>
         </tbody>

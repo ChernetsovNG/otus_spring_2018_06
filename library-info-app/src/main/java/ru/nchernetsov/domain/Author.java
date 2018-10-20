@@ -57,12 +57,12 @@ public class Author {
     }
 
     public void setBookIds(List<Book> books) {
-        this.bookIds = books.stream().map(Book::getId).collect(Collectors.toList());
+        this.bookIds = books.stream().map(Book::getBookId).collect(Collectors.toList());
     }
 
     public void addBook(Book book) {
-        if (!bookIds.contains(book.getId())) {
-            bookIds.add(book.getId());
+        if (!bookIds.contains(book.getBookId())) {
+            bookIds.add(book.getBookId());
         }
     }
 

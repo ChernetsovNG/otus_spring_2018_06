@@ -65,7 +65,7 @@ public class Comment {
     }
 
     public void setBook(Book book) {
-        this.bookId = book.getId();
+        this.bookId = book.getBookId();
     }
 
     @Override
