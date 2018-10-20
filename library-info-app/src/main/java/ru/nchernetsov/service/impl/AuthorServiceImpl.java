@@ -45,7 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void deleteAuthorById(String id) {
+    public Author deleteAuthorById(String id) {
         Author author = findOne(id);
 
         List<String> authorBookIds = author.getBookIds();
@@ -56,6 +56,8 @@ public class AuthorServiceImpl implements AuthorService {
         }
 
         authorRepository.deleteById(id);
+
+        return author;
     }
 
     @Override

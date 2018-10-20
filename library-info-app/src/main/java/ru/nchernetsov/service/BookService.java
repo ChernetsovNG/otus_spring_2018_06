@@ -12,5 +12,5 @@ public interface BookService {
 
     Book createOrUpdateBook(Book book);
 
-    void deleteBookById(String id);
+    Book deleteBookById(String id);
 }

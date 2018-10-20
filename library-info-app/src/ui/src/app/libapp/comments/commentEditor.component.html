@@ -1,0 +1,15 @@
+<div class="bg-primary p-3" [class.bg-warning]="editing">
+    <h5>{{editing ? "Edit" : "Create"}} Comment</h5>
+</div>
+<form novalidate #form="ngForm" (ngSubmit)="save(form)">
+    <div class="form-group">
+        <label for="text">Text</label>
+        <textarea class="form-control" rows="10" cols="30" name="text" id="text" [(ngModel)]="comment.text"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" [class.btn-warning]="editing">
+        {{editing ? "Save" : "Create"}}
+    </button>
+    <button type="reset" class="btn btn-secondary" routerLink="/comments/books/{{bookId}}">
+        Cancel
+    </button>
+</form>
