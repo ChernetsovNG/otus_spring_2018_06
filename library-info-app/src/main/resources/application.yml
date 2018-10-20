@@ -29,6 +29,4 @@ logging:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: spring-boot-app-db
+      uri: mongodb://mongocontainer:27017/spring-boot-app-db
