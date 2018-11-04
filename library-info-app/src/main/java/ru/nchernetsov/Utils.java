@@ -17,7 +17,7 @@ public final class Utils {
     }
 
     public static List<String> getBookIds(List<Book> books) {
-        return books.stream().map(Book::getId).collect(Collectors.toList());
+        return books.stream().map(Book::getBookId).collect(Collectors.toList());
     }
 
     public static List<String> getGenreNames(List<Genre> genres) {
@@ -27,5 +27,4 @@ public final class Utils {
     public static List<String> getAuthorNames(List<Author> authors) {
         return authors.stream().map(Author::getName).collect(Collectors.toList());
     }
-
 }

@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
             Optional<Book> bookOptional = bookRepository.findById(bookId);
             if (bookOptional.isPresent()) {
                 Book book = bookOptional.get();
-                book.removeComment(comment.getText());
+                book.removeComment(comment.getComment());
                 commentRepository.delete(comment);
                 bookRepository.save(book);
             }
@@ -101,10 +101,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void addCommentToBook(Comment comment, Book book) {
-        comment.setBookId(book.getId());
+        comment.setBookId(book.getBookId());
         commentRepository.save(comment);
         book.addComment(comment);
         bookRepository.save(book);
     }
-
 }

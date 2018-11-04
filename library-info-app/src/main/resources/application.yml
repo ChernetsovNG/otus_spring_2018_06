@@ -1,11 +1,30 @@
 server:
-  port: 3500
+  port: 8080
 
 management:
   endpoints:
     web:
       exposure:
-        include: threaddump, env, configprops
+        include: "*"
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+  health:
+    diskspace:
+      enabled: true
+    mongo:
+      enabled: true
+    db:
+      enabled: true
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  file: "library-info-app.log"
 
 spring:
   data:

@@ -63,8 +63,8 @@ public class CommentController {
         commentService.deleteCommentById(commentId);
 
         model.addAttribute("bookTitle", book.getTitle());
-        model.addAttribute("comments", commentService.getBookComments(book.getId()));
+        model.addAttribute("comments", commentService.getBookComments(book.getBookId()));
 
-        return "redirect:/comments/books/" + book.getId();
+        return "redirect:/comments/books/" + book.getBookId();
     }
 }

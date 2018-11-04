@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,10 +12,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Document(collection = "books")
-public class Book extends ResourceSupport {
+public class Book {
 
     @Id
-    private String bookId;
+    private String id;
 
     @Indexed(unique = true)
     private String title;
@@ -31,7 +30,7 @@ public class Book extends ResourceSupport {
     private List<Comment> comments = new ArrayList<>();
 
     public Book() {
-        this.bookId = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     public Book(String title) {
@@ -54,12 +53,12 @@ public class Book extends ResourceSupport {
         comments.add(comment);
     }
 
-    public String getBookId() {
-        return bookId;
+    public String getId() {
+        return id;
     }
 
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -131,4 +130,6 @@ public class Book extends ResourceSupport {
             "title='" + title + '\'' +
             '}';
     }
+
+
 }

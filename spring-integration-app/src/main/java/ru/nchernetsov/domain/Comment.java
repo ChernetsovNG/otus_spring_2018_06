@@ -60,12 +60,12 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public String getBookId() {
+    public String getBook() {
         return bookId;
     }
 
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
+    public void setBook(Book book) {
+        this.bookId = book.getId();
     }
 
     @Override

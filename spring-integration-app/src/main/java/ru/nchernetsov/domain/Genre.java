@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Document(collection = "authors")
-public class Author {
+@Document(collection = "genres")
+public class Genre {
 
     @Id
     private String id;
@@ -21,16 +21,16 @@ public class Author {
 
     private List<String> bookIds = new ArrayList<>();
 
-    public Author() {
+    public Genre() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public Author(String name) {
+    public Genre(String name) {
         this();
         this.name = name;
     }
 
-    public Author(String id, String name) {
+    public Genre(String id, String name) {
         this();
         this.id = id;
         this.name = name;
@@ -57,18 +57,18 @@ public class Author {
     }
 
     public void setBookIds(List<Book> books) {
-        this.bookIds = books.stream().map(Book::getBookId).collect(Collectors.toList());
+        this.bookIds = books.stream().map(Book::getId).collect(Collectors.toList());
     }
 
     public void addBook(Book book) {
-        if (!bookIds.contains(book.getBookId())) {
-            bookIds.add(book.getBookId());
+        if (!bookIds.contains(book.getId())) {
+            bookIds.add(book.getId());
         }
     }
 
     @Override
     public String toString() {
-        return "Author{" +
+        return "Genre{" +
             "name='" + name + '\'' +
             '}';
     }
