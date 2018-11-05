@@ -26,7 +26,17 @@ management:
 logging:
   file: "library-info-app.log"
 
+---
 spring:
+  profiles: docker
   data:
     mongodb:
       uri: mongodb://mongocontainer:27017/spring-boot-app-db
+
+---
+spring:
+  profiles: local
+  data:
+    mongodb:
+      host: localhost
+      port: 27017

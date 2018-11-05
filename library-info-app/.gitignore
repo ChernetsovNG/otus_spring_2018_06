@@ -26,3 +26,4 @@
 /.nb-gradle/
 data.trace.db
 /data/library_db.trace.db
+*.gz
