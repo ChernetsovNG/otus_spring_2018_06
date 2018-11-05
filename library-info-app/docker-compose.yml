@@ -1,0 +1,19 @@
+version: '3.2'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongocontainer
+    restart: always
+    ports:
+    - 27017:27017
+
+  library-info-app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: library-info-app
+    ports:
+    - 8080:8080
+    depends_on:
+    - mongodb
