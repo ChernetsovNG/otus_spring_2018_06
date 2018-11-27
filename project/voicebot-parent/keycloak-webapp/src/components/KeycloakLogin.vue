@@ -8,9 +8,9 @@
     import Keycloak from '../../node_modules/keycloak-js';
 
     const keycloak = new Keycloak({
-        url: 'https://keycloak.ivoice.online/auth',
+        url: '...',
         realm: 'billing',
-        clientId: 'billing-test-client',
+        clientId: '...',
         "enable-cors": true
     });
 

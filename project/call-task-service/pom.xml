@@ -13,32 +13,6 @@
         https://www.draw.io/#G1g0dY2El7xlaPikNhVfmi4ZCgR3NIja9u
     </description>
 
-    <repositories>
-        <repository>
-            <id>nexus-snapshots</id>
-            <snapshots><enabled>true</enabled></snapshots>
-            <releases><enabled>false</enabled></releases>
-            <url>https://nexus.ivoice.online/repository/maven-snapshots/</url>
-        </repository>
-        <repository>
-            <id>nexus-releases</id>
-            <snapshots><enabled>false</enabled></snapshots>
-            <releases><enabled>true</enabled></releases>
-            <url>https://nexus.ivoice.online/repository/maven-releases/</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <url>https://nexus.ivoice.online/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus-releases</id>
-            <url>https://nexus.ivoice.online/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
