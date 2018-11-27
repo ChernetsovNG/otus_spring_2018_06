@@ -1,0 +1,29 @@
+server:
+  port: 8101
+
+spring:
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      database: ${DB_NAME}
+      port: ${PORT}
+  kafka:
+    consumer:
+      group-id: ivoice-billing-consumer
+      auto-offset-reset: earliest
+
+keycloak:
+  auth-server-url: ...
+  realm: billing
+  resource: ...
+  public-client: true
+  principal-attribute: preferred_username
+
+---
+spring:
+  profiles: local
+  data:
+    mongodb:
+      port: 27017
+      database: billing-test
+      host: localhost
