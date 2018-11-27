@@ -1,0 +1,15 @@
+FROM anapsix/alpine-java:8_jdk
+
+#setup MSK timezone
+RUN apk update && \
+    apk add tzdata && \
+    cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime && \
+    echo "Etc/UTC" >  /etc/timezone && \
+    apk del tzdata
+
+WORKDIR /app
+ADD ./target/call-task-service.jar .
+
+CMD ["java", "-Xms256m", "-Djava.net.preferIPv4Stack=true", "-jar", "call-task-service.jar"]
+
+EXPOSE 8093

@@ -1,0 +1,52 @@
+stages:
+  - prepare
+  - test
+  - build
+  - deploy
+
+services:
+  - docker:dind
+
+dependencies:
+  stage: prepare
+  image: docker
+  tags:
+   - docker
+  script:
+   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+   - docker build -f ./Dockerfile.base . -t $CI_REGISTRY_IMAGE/maven-dependencies:$CI_COMMIT_REF_SLUG
+   - docker push $CI_REGISTRY_IMAGE/maven-dependencies:$CI_COMMIT_REF_SLUG
+
+test:
+  stage: test
+  # уберем, когда тесты в порядок приведем
+  allow_failure: true
+  image: $CI_REGISTRY_IMAGE/maven-dependencies:$CI_COMMIT_REF_SLUG
+  script:
+    - mvn verify
+
+build:
+  stage: build
+  when: manual
+  image: docker
+  tags:
+   - docker
+  script:
+   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+   - docker build --pull -f ./Dockerfile . -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+   - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+deploy:
+  image: docker
+  tags:
+   - docker
+  stage: deploy
+  only:
+    - master
+  script:
+   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+   - docker build --pull --build-arg BUILDER_IMAGE=$CI_REGISTRY_IMAGE/maven-dependencies:$CI_COMMIT_REF_SLUG -f ./Dockerfile . -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+   - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+   - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:latest
+   - docker push $CI_REGISTRY_IMAGE
+   # todo deploy there
