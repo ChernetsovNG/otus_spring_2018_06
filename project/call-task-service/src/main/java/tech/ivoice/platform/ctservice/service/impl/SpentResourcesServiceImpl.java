@@ -78,23 +78,25 @@ public class SpentResourcesServiceImpl implements SpentResourcesService {
     private Map<BillingResource, Double> convertToSpentResources(Map<String, Object> callTaskSpentResources, long talkMillis) {
         Map<BillingResource, Double> result = new HashMap<>();
 
-        Object collectValue = callTaskSpentResources.get("collect");
-        if (collectValue != null) {
-            if (collectValue instanceof Integer) {
-                result.put(BillingResource.ASR_SESSIONS_COUNT, (double) (Integer) collectValue);
-            } else if (collectValue instanceof Double) {
-                result.put(BillingResource.ASR_SESSIONS_COUNT, (Double) collectValue);
+	    if (callTaskSpentResources != null) {
+            Object collectValue = callTaskSpentResources.get("collect");
+            if (collectValue != null) {
+                if (collectValue instanceof Integer) {
+                    result.put(BillingResource.ASR_SESSIONS_COUNT, (double) (Integer) collectValue);
+                } else if (collectValue instanceof Double) {
+                    result.put(BillingResource.ASR_SESSIONS_COUNT, (Double) collectValue);
+                }
             }
-        }
 
-        Object synthesizeValue = callTaskSpentResources.get("synthesize");
-        if (synthesizeValue != null) {
-            if (synthesizeValue instanceof Integer) {
-                result.put(BillingResource.TTS_SYMBOLS_GENERATED, (double) (Integer) synthesizeValue);
-            } else if (synthesizeValue instanceof Double) {
-                result.put(BillingResource.TTS_SYMBOLS_GENERATED, (Double) synthesizeValue);
+            Object synthesizeValue = callTaskSpentResources.get("synthesize");
+            if (synthesizeValue != null) {
+                if (synthesizeValue instanceof Integer) {
+                    result.put(BillingResource.TTS_SYMBOLS_GENERATED, (double) (Integer) synthesizeValue);
+                } else if (synthesizeValue instanceof Double) {
+                    result.put(BillingResource.TTS_SYMBOLS_GENERATED, (Double) synthesizeValue);
+                }
             }
-        }
+	}
 
         // время переводим в секунды
         result.put(BillingResource.DIALOG_TIME, ((double) talkMillis) / 1000.0);
